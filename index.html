@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Entrenamiento de Running</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 50%, #ffffff 100%);
+            min-height: 100vh;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #dc143c 0%, #8b0000 100%);
+            color: white;
+            padding: 3rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M25 25h50v50H25z' fill='none' stroke='white' stroke-width='0.5' opacity='0.1'/%3E%3C/svg%3E");
+            animation: pulse 20s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.3; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: -1px;
+        }
+
+        .hero-content p {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            margin-bottom: 0;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .form-section {
+            padding: 3rem 0;
+            background: white;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 20px;
+            padding: clamp(1.5rem, 4vw, 3rem);
+            box-shadow: 0 20px 60px rgba(220, 20, 60, 0.1);
+            border: 1px solid rgba(220, 20, 60, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #dc143c;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: #1a1a1a;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #dc143c;
+            box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #dc143c 0%, #8b0000 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(220, 20, 60, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+            margin-left: 1rem;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 12px 35px rgba(26, 26, 26, 0.4);
+        }
+
+        .plan-container {
+            display: none;
+            margin-top: 2rem;
+            background: white;
+            padding: 2rem 0;
+        }
+
+        .plan-header {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 40px rgba(220, 20, 60, 0.1);
+            border: 1px solid rgba(220, 20, 60, 0.1);
+        }
+
+        .plan-header h2 {
+            color: #dc143c;
+            margin-bottom: 1.5rem;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .plan-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 12px;
+            border-left: 4px solid #dc143c;
+            text-align: center;
+        }
+
+        .info-item strong {
+            color: #dc143c;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-item span {
+            color: #1a1a1a;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .week-card {
+            background: white;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(220, 20, 60, 0.1);
+        }
+
+        .week-header {
+            background: linear-gradient(135deg, #dc143c 0%, #8b0000 100%);
+            color: white;
+            padding: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .training-grid {
+            display: grid;
+            gap: 1px;
+            background: #e8e8e8;
+        }
+
+        .training-day {
+            background: white;
+            padding: 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .training-day:last-child {
+            border-bottom: none;
+        }
+
+        .day-header {
+            display: grid;
+            grid-template-columns: 120px 1fr 100px;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .day-header {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 0.5rem;
+            }
+        }
+
+        .day-name {
+            font-weight: 800;
+            color: #dc143c;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        .session-type {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 1.1rem;
+        }
+
+        .session-distance {
+            background: #dc143c;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .session-details {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.5rem;
+            border-left: 4px solid #dc143c;
+        }
+
+        .session-phase {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .session-phase:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .phase-title {
+            color: #dc143c;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .phase-content {
+            color: #333;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .training-purpose {
+            background: #fff3f3;
+            border: 1px solid #ffd6d6;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .purpose-title {
+            color: #8b0000;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .purpose-content {
+            color: #666;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .volume-summary {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(220, 20, 60, 0.1);
+        }
+
+        .loading .spinner {
+            border: 4px solid rgba(220, 20, 60, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #dc143c;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: #dc143c;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        @media print {
+            body { 
+                background: white; 
+                font-size: 10px;
+            }
+            .hero-section, .form-section, .btn { display: none; }
+            .plan-container { display: block !important; margin: 0; padding: 0; }
+            .week-card { 
+                break-inside: avoid; 
+                margin-bottom: 15px; 
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            .training-day { padding: 10px; }
+            .session-details { padding: 10px; }
+        }
+
+        .small-text {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <h1>🏃‍♂️ RUNNING COACH PRO</h1>
+                <p>Planificación profesional de entrenamiento personalizado</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <div class="container">
+            <div class="form-card">
+                <h2 class="form-title">Crea Tu Plan de Entrenamiento</h2>
+                <form id="trainingForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Nombre completo</label>
+                            <input type="text" id="name" required placeholder="Ingresa tu nombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="age">Edad</label>
+                            <input type="number" id="age" min="16" max="80" required placeholder="38">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="experience">Nivel de experiencia</label>
+                            <select id="experience" required>
+                                <option value="">Selecciona tu nivel</option>
+                                <option value="principiante">Principiante</option>
+                                <option value="intermedio">Intermedio</option>
+                                <option value="avanzado">Avanzado</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="distance">Distancia objetivo</label>
+                            <select id="distance" required>
+                                <option value="">Selecciona la distancia</option>
+                                <option value="5K">5K</option>
+                                <option value="10K">10K</option>
+                                <option value="21K">21K (Medio Maratón)</option>
+                                <option value="42K">42K (Maratón)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pace">Ritmo promedio deseado (min/km)</label>
+                        <input type="text" id="pace" required placeholder="5:30" pattern="[0-9]:[0-5][0-9]">
+                        <div class="small-text">Formato: MM:SS (ejemplo: 5:30 para 5 minutos y 30 segundos por kilómetro)</div>
+                    </div>
+
+                    <div class="btn-container">
+                        <button type="submit" class="btn">Generar Plan de Entrenamiento</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Creando tu plan personalizado de entrenamiento...</p>
+        </div>
+
+        <div class="plan-container" id="planContainer">
+            <div class="plan-header">
+                <h2>Tu Plan de Entrenamiento Personalizado</h2>
+                <div class="plan-info" id="planInfo">
+                    <!-- Plan info will be populated here -->
+                </div>
+                <div class="btn-container">
+                    <button onclick="generatePDF()" class="btn btn-secondary">📄 Descargar PDF</button>
+                </div>
+            </div>
+            <div id="trainingPlan">
+                <!-- Training plan will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPlan = null;
+
+        document.getElementById('trainingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('planContainer').style.display = 'none';
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value,
+                age: parseInt(document.getElementById('age').value),
+                experience: document.getElementById('experience').value,
+                distance: document.getElementById('distance').value,
+                pace: document.getElementById('pace').value
+            };
+            
+            // Generate plan
+            setTimeout(() => {
+                currentPlan = generateTrainingPlan(formData);
+                displayPlan(currentPlan);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('planContainer').style.display = 'block';
+                document.getElementById('planContainer').scrollIntoView({ behavior: 'smooth' });
+            }, 2000);
+        });
+
+        function generateTrainingPlan(data) {
+            const plans = {
+                '5K': {
+                    weeks: 8,
+                    sessions: [
+                        { day: 'Lunes', type: 'Trote fácil', distance: '3-4 km' },
+                        { day: 'Martes', type: 'Intervalos', distance: '4-5 km' },
+                        { day: 'Miércoles', type: 'Descanso activo', distance: '3 km' },
+                        { day: 'Jueves', type: 'Tempo run', distance: '4-5 km' },
+                        { day: 'Viernes', type: 'Descanso', distance: '0 km' },
+                        { day: 'Sábado', type: 'Carrera larga', distance: '5-6 km' },
+                        { day: 'Domingo', type: 'Recuperación', distance: '3 km' }
+                    ]
+                },
+                '10K': {
+                    weeks: 10,
+                    sessions: [
+                        { day: 'Lunes', type: 'Trote fácil', distance: '5-6 km' },
+                        { day: 'Martes', type: 'Intervalos', distance: '6-7 km' },
+                        { day: 'Miércoles', type: 'Descanso activo', distance: '4 km' },
+                        { day: 'Jueves', type: 'Tempo run', distance: '6-7 km' },
+                        { day: 'Viernes', type: 'Descanso', distance: '0 km' },
+                        { day: 'Sábado', type: 'Carrera larga', distance: '8-10 km' },
+                        { day: 'Domingo', type: 'Recuperación', distance: '4 km' }
+                    ]
+                },
+                '21K': {
+                    weeks: 12,
+                    sessions: [
+                        { day: 'Lunes', type: 'Trote fácil', distance: '6-8 km' },
+                        { day: 'Martes', type: 'Intervalos', distance: '8-10 km' },
+                        { day: 'Miércoles', type: 'Descanso activo', distance: '5 km' },
+                        { day: 'Jueves', type: 'Tempo run', distance: '8-10 km' },
+                        { day: 'Viernes', type: 'Descanso', distance: '0 km' },
+                        { day: 'Sábado', type: 'Carrera larga', distance: '12-18 km' },
+                        { day: 'Domingo', type: 'Recuperación', distance: '5-6 km' }
+                    ]
+                },
+                '42K': {
+                    weeks: 16,
+                    sessions: [
+                        { day: 'Lunes', type: 'Trote fácil', distance: '8-10 km' },
+                        { day: 'Martes', type: 'Intervalos', distance: '10-12 km' },
+                        { day: 'Miércoles', type: 'Descanso activo', distance: '6 km' },
+                        { day: 'Jueves', type: 'Tempo run', distance: '10-12 km' },
+                        { day: 'Viernes', type: 'Descanso', distance: '0 km' },
+                        { day: 'Sábado', type: 'Carrera larga', distance: '18-32 km' },
+                        { day: 'Domingo', type: 'Recuperación', distance: '6-8 km' }
+                    ]
+                }
+            };
+
+            const basePlan = plans[data.distance];
+            const adjustedPlan = adjustPlanByExperience(basePlan, data.experience);
+            
+            return {
+                userData: data,
+                weeks: adjustedPlan.weeks,
+                sessions: adjustedPlan.sessions,
+                weeklyPlans: generateWeeklyPlans(adjustedPlan, data)
+            };
+        }
+
+        function adjustPlanByExperience(plan, experience) {
+            const multipliers = {
+                'principiante': 0.8,
+                'intermedio': 1.0,
+                'avanzado': 1.2
+            };
+
+            const multiplier = multipliers[experience];
+            
+            return {
+                ...plan,
+                sessions: plan.sessions.map(session => ({
+                    ...session,
+                    distance: adjustDistance(session.distance, multiplier)
+                }))
+            };
+        }
+
+        function adjustDistance(distance, multiplier) {
+            if (distance === '0 km') return distance;
+            
+            const parts = distance.split('-');
+            if (parts.length === 2) {
+                const min = Math.round(parseInt(parts[0]) * multiplier);
+                const max = Math.round(parseInt(parts[1].replace(' km', '')) * multiplier);
+                return `${min}-${max} km`;
+            } else {
+                const value = Math.round(parseInt(distance.replace(' km', '')) * multiplier);
+                return `${value} km`;
+            }
+        }
+
+        function generateWeeklyPlans(plan, userData) {
+            const weeks = [];
+            const paceComponents = userData.pace.split(':');
+            const targetPaceSeconds = parseInt(paceComponents[0]) * 60 + parseInt(paceComponents[1]);
+            
+            for (let week = 1; week <= plan.weeks; week++) {
+                const weekPlan = {
+                    week: week,
+                    sessions: plan.sessions.map(session => {
+                        return generateSessionDetail(session, week, plan.weeks, userData, targetPaceSeconds);
+                    })
+                };
+                
+                // Calculate total weekly volume
+                let totalKm = 0;
+                weekPlan.sessions.forEach(session => {
+                    if (session.distance && session.distance !== '0 km') {
+                        const distanceStr = session.distance.split('-');
+                        const avgDistance = distanceStr.length === 2 ? 
+                            (parseInt(distanceStr[0]) + parseInt(distanceStr[1].replace(' km', ''))) / 2 :
+                            parseInt(session.distance.replace(' km', ''));
+                        totalKm += avgDistance;
+                    }
+                });
+                weekPlan.totalKm = Math.round(totalKm);
+                
+                weeks.push(weekPlan);
+            }
+            
+            return weeks;
+        }
+
+        function generateSessionDetail(session, week, totalWeeks, userData, targetPaceSeconds) {
+            const sessionDetails = {
+                day: session.day,
+                type: session.type,
+                distance: session.distance,
+                details: generateSessionDescription(session.type, week, totalWeeks, userData, targetPaceSeconds),
+                purpose: getSessionPurpose(session.type)
+            };
+            
+            return sessionDetails;
+        }
+
+        function getSessionPurpose(type) {
+            const purposes = {
+                'Trote fácil': {
+                    title: '🎯 Objetivo del Trote Fácil',
+                    content: 'Desarrolla tu base aeróbica y mejora la eficiencia cardiovascular. Este ritmo permite que tu cuerpo se adapte al estrés del running mientras favorece la recuperación activa. Fortalece tendones, ligamentos y músculos de forma progresiva.'
+                },
+                'Intervalos': {
+                    title: '🎯 Objetivo de los Intervalos',
+                    content: 'Mejora tu VO2 máximo y potencia anaeróbica. Los intervalos aumentan tu capacidad de procesar oxígeno y te permiten correr a ritmos más rápidos por períodos más largos. Esencial para mejorar tu velocidad y resistencia a la velocidad.'
+                },
+                'Descanso activo': {
+                    title: '🎯 Objetivo del Descanso Activo',
+                    content: 'Facilita la recuperación muscular manteniendo el flujo sanguíneo. Ayuda a eliminar metabolitos de desecho del entrenamiento intenso anterior, mantiene la movilidad articular y prepara el cuerpo para el próximo entrenamiento exigente.'
+                },
+                'Tempo run': {
+                    title: '🎯 Objetivo del Tempo Run',
+                    content: 'Mejora tu umbral de lactato y resistencia anaeróbica. Este ritmo "cómodamente duro" entrena a tu cuerpo para mantener un esfuerzo sostenido, mejorando tu capacidad de correr más rápido durante más tiempo sin acumular lactato.'
+                },
+                'Descanso': {
+                    title: '🎯 Objetivo del Descanso',
+                    content: 'Permite la regeneración completa de fibras musculares y reposición de glucógeno. El descanso total es crucial para la adaptación y prevención de lesiones. Tu cuerpo se fortalece durante el descanso, no durante el entrenamiento.'
+                },
+                'Carrera larga': {
+                    title: '🎯 Objetivo de la Carrera Larga',
+                    content: 'Desarrolla resistencia aeróbica y eficiencia energética. Mejora la capacidad de utilizar grasa como combustible, fortalece el sistema musculoesquelético y prepara mental y físicamente para la distancia objetivo. Base fundamental del entrenamiento de resistencia.'
+                },
+                'Recuperación': {
+                    title: '🎯 Objetivo de la Recuperación',
+                    content: 'Mantiene el ritmo de entrenamiento mientras permite recuperación activa. Mejora la circulación sanguínea para eliminar toxinas, mantiene la mecánica de carrera y prepara las piernas para la semana siguiente sin generar fatiga adicional.'
+                }
+            };
+            
+            return purposes[type] || purposes['Trote fácil'];
+        }
+
+        function generateSessionDescription(type, week, totalWeeks, userData, targetPaceSeconds) {
+            const easyPace = formatPace(targetPaceSeconds + 30);
+            const tempoPace = formatPace(targetPaceSeconds - 10);
+            const intervalPace = formatPace(targetPaceSeconds - 20);
+            
+            const descriptions = {
+                'Trote fácil': {
+                    warmup: `Calentamiento: 10 min caminata dinámica + 5 min trote suave a ${formatPace(targetPaceSeconds + 45)}`,
+                    main: `Desarrollo: Trote continuo a ritmo cómodo ${easyPace}/km. FC: 65-75% FCmáx. Debes poder mantener una conversación.`,
+                    cooldown: `Enfriamiento: 5 min caminata + 10 min estiramientos estáticos enfocando gemelos, cuádriceps y glúteos.`
+                },
+                'Intervalos': {
+                    warmup: `Calentamiento: 15 min trote fácil a ${easyPace}/km + 6 ejercicios dinámicos + 4 progresivos de 100m`,
+                    main: `Desarrollo: 6x400m a ${intervalPace}/km con 90 seg recuperación trotando suave. FC: 85-90% FCmáx. Mantén la forma técnica.`,
+                    cooldown: `Enfriamiento: 10 min trote muy suave + 15 min estiramientos completos + hidratación`
+                },
+                'Descanso activo': {
+                    warmup: `Calentamiento: 5 min caminata ligera con movilidad articular`,
+                    main: `Desarrollo: Trote muy suave a ${formatPace(targetPaceSeconds + 60)}/km o cross-training (bicicleta 30min/natación 20min). FC: 60-70% FCmáx`,
+                    cooldown: `Enfriamiento: 10 min estiramientos + ejercicios de movilidad + rodillo de espuma en piernas`
+                },
+                'Tempo run': {
+                    warmup: `Calentamiento: 15 min trote fácil a ${easyPace}/km + 4 progresivos de 100m aumentando ritmo gradualmente`,
+                    main: `Desarrollo: 20-30 min a ritmo de umbral ${tempoPace}/km. FC: 80-85% FCmáx. Ritmo sostenido "cómodamente duro".`,
+                    cooldown: `Enfriamiento: 10 min trote fácil disminuyendo gradualmente + 15 min estiramientos + hidratación`
+                },
+                'Descanso': {
+                    warmup: `Día de descanso completo para regeneración`,
+                    main: `Actividad: Descanso total. Considera masaje deportivo o sesión de kinesiología si hay molestias.`,
+                    cooldown: `Nutrición: Enfócate en hidratación, proteínas para recuperación muscular y carbohidratos complejos`
+                },
+                'Carrera larga': {
+                    warmup: `Calentamiento: 15 min trote muy fácil + movilidad articular completa + activación glúteos`,
+                    main: `Desarrollo: Carrera continua a ${formatPace(targetPaceSeconds + 20)}/km. FC: 70-80% FCmáx. Hidratación cada 20 min (200ml). Gel energético cada 45 min si supera 90 min.`,
+                    cooldown: `Enfriamiento: 10 min caminata + 20 min estiramientos profundos + rodillo de espuma + hidratación con electrolitos`
+                },
+                'Recuperación': {
+                    warmup: `Calentamiento: 5 min caminata suave con respiraciones profundas`,
+                    main: `Desarrollo: Trote muy fácil a ${formatPace(targetPaceSeconds + 50)}/km. FC: 60-70% FCmáx. Enfoque total en recuperación, no en rendimiento.`,
+                    cooldown: `Enfriamiento: 15 min estiramientos suaves + ejercicios de fortalecimiento core (plancha, puente glúteos) + baño de contraste si es posible`
+                }
+            };
+            
+            return descriptions[type] || descriptions['Trote fácil'];
+        }
+
+        function formatPace(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function displayPlan(plan) {
+            // Display plan info
+            const planInfoHtml = `
+                <div class="info-item">
+                    <strong>Atleta</strong>
+                    <span>${plan.userData.name}</span>
+                </div>
+                <div class="info-item">
+                    <strong>Edad</strong>
+                    <span>${plan.userData.age} años</span>
+                </div>
+                <div class="info-item">
+                    <strong>Experiencia</strong>
+                    <span>${plan.userData.experience.charAt(0).toUpperCase() + plan.userData.experience.slice(1)}</span>
+                </div>
+                <div class="info-item">
+                    <strong>Objetivo</strong>
+                    <span>${plan.userData.distance}</span>
+                </div>
+                <div class="info-item">
+                    <strong>Ritmo objetivo</strong>
+                    <span>${plan.userData.pace}/km</span>
+                </div>
+                <div class="info-item">
+                    <strong>Duración</strong>
+                    <span>${plan.weeks} semanas</span>
+                </div>
+            `;
+            document.getElementById('planInfo').innerHTML = planInfoHtml;
+
+            // Display weekly plans
+            let planHtml = '';
+            plan.weeklyPlans.forEach(week => {
+                planHtml += `
+                    <div class="week-card">
+                        <div class="week-header">
+                            Semana ${week.week} de ${plan.weeks}
+                        </div>
+                        <div class="training-grid">
+                `;
+                
+                week.sessions.forEach(session => {
+                    planHtml += `
+                        <div class="training-day">
+                            <div class="day-header">
+                                <div class="day-name">${session.day}</div>
+                                <div class="session-type">${session.type}</div>
+                                <div class="session-distance">${session.distance}</div>
+                            </div>
+                            
+                            <div class="session-details">
+                                <div class="session-phase">
+                                    <div class="phase-title">🔥 Calentamiento</div>
+                                    <div class="phase-content">${session.details.warmup}</div>
+                                </div>
+                                <div class="session-phase">
+                                    <div class="phase-title">🏃‍♂️ Desarrollo Principal</div>
+                                    <div class="phase-content">${session.details.main}</div>
+                                </div>
+                                <div class="session-phase">
+                                    <div class="phase-title">🧘‍♂️ Vuelta a la Calma</div>
+                                    <div class="phase-content">${session.details.cooldown}</div>
+                                </div>
+                            </div>
+
+                            <div class="training-purpose">
+                                <div class="purpose-title">${session.purpose.title}</div>
+                                <div class="purpose-content">${session.purpose.content}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                planHtml += `
+                        </div>
+                        <div class="volume-summary">
+                            📊 VOLUMEN SEMANAL TOTAL: ${week.totalKm} KM
+                            ${week.week % 4 === 0 ? '<br><br>💆‍♂️ RECOMENDACIÓN: Programa una sesión de masaje deportivo o kinesiología esta semana para optimizar tu recuperación.' : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('trainingPlan').innerHTML = planHtml;
+        }
+
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            let yPos = 20;
+            
+            // Title
+            doc.setFontSize(22);
+            doc.setTextColor(220, 20, 60);
+            doc.setFont(undefined, 'bold');
+            doc.text('PLAN DE ENTRENAMIENTO PERSONALIZADO', 105, yPos, { align: 'center' });
+            
+            yPos += 15;
+            
+            // User info
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            doc.setFont(undefined, 'normal');
+            
+            const userInfo = [
+                ['Atleta:', currentPlan.userData.name, 'Edad:', `${currentPlan.userData.age} años`],
+                ['Experiencia:', currentPlan.userData.experience, 'Objetivo:', currentPlan.userData.distance],
+                ['Ritmo objetivo:', `${currentPlan.userData.pace}/km`, 'Duración:', `${currentPlan.weeks} semanas`]
+            ];
+            
+            userInfo.forEach(row => {
+                doc.setFont(undefined, 'bold');
+                doc.text(row[0], 20, yPos);
+                doc.setFont(undefined, 'normal');
+                doc.text(row[1], 50, yPos);
+                doc.setFont(undefined, 'bold');
+                doc.text(row[2], 110, yPos);
+                doc.setFont(undefined, 'normal');
+                doc.text(row[3], 140, yPos);
+                yPos += 7;
+            });
+            
+            yPos += 5;
+            
+            // Weekly plans
+            currentPlan.weeklyPlans.forEach((week, weekIndex) => {
+                if (yPos > 250) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                // Week header
+                doc.setFillColor(220, 20, 60);
+                doc.rect(20, yPos - 5, 170, 10, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'bold');
+                doc.text(`SEMANA ${week.week} DE ${currentPlan.weeks}`, 105, yPos + 2, { align: 'center' });
+                
+                yPos += 12;
+                
+                // Sessions
+                week.sessions.forEach(session => {
+                    if (yPos > 260) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    
+                    doc.setFontSize(9);
+                    doc.setTextColor(220, 20, 60);
+                    doc.setFont(undefined, 'bold');
+                    doc.text(`${session.day.toUpperCase()} - ${session.type}`, 20, yPos);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text(`${session.distance}`, 180, yPos, { align: 'right' });
+                    
+                    yPos += 5;
+                    
+                    doc.setFontSize(8);
+                    doc.setFont(undefined, 'normal');
+                    
+                    const details = [
+                        `Calentamiento: ${session.details.warmup}`,
+                        `Desarrollo: ${session.details.main}`,
+                        `Enfriamiento: ${session.details.cooldown}`
+                    ];
+                    
+                    details.forEach(detail => {
+                        const lines = doc.splitTextToSize(detail, 170);
+                        doc.text(lines, 22, yPos);
+                        yPos += lines.length * 4;
+                    });
+                    
+                    yPos += 3;
+                });
+                
+                // Volume summary
+                doc.setFillColor(26, 26, 26);
+                doc.rect(20, yPos, 170, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(9);
+                doc.setFont(undefined, 'bold');
+                doc.text(`VOLUMEN SEMANAL: ${week.totalKm} KM`, 105, yPos + 5, { align: 'center' });
+                
+                yPos += 15;
+            });
+            
+            // Save PDF
+            doc.save(`Plan_Entrenamiento_${currentPlan.userData.name.replace(/\s+/g, '_')}.pdf`);
+        }
+    </script>
+</body>
+</html>
