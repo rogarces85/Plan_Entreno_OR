@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planificador de Entrenamiento de Running</title>
+    <title>Osorno Runners - Planificador de Entrenamiento</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <style>
@@ -24,7 +24,7 @@
         .hero-section {
             background: linear-gradient(135deg, #dc143c 0%, #8b0000 100%);
             color: white;
-            padding: 3rem 0;
+            padding: 2rem 0;
             position: relative;
             overflow: hidden;
         }
@@ -53,22 +53,39 @@
             z-index: 1;
         }
 
+        .logo-container {
+            text-align: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 15px;
+            display: inline-block;
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logo {
+            max-width: 350px;
+            height: auto;
+        }
+
         .hero-content {
             text-align: center;
             position: relative;
             z-index: 2;
+            margin-top: 1rem;
         }
 
         .hero-content h1 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-size: clamp(1.5rem, 3.5vw, 2.2rem);
             font-weight: 900;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             letter-spacing: -1px;
         }
 
         .hero-content p {
-            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
             margin-bottom: 0;
             opacity: 0.95;
             font-weight: 300;
@@ -85,7 +102,7 @@
             padding: clamp(1.5rem, 4vw, 3rem);
             box-shadow: 0 20px 60px rgba(220, 20, 60, 0.1);
             border: 1px solid rgba(220, 20, 60, 0.1);
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
@@ -95,6 +112,15 @@
             color: #dc143c;
             font-size: clamp(1.5rem, 3vw, 2rem);
             font-weight: 700;
+        }
+
+        .form-section-title {
+            color: #1a1a1a;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #dc143c;
         }
 
         .form-group {
@@ -110,7 +136,8 @@
         }
 
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 1rem;
             border: 2px solid #e8e8e8;
@@ -119,10 +146,17 @@
             transition: all 0.3s ease;
             background: white;
             color: #1a1a1a;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
         }
 
         .form-group input:focus,
-        .form-group select:focus {
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
             border-color: #dc143c;
             box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
@@ -135,11 +169,95 @@
             gap: 1.5rem;
         }
 
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+        }
+
         @media (max-width: 768px) {
-            .form-row {
+            .form-row, .form-row-3 {
                 grid-template-columns: 1fr;
                 gap: 1rem;
             }
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checkbox-item:hover {
+            background: #ffe5e5;
+        }
+
+        .checkbox-item input[type="checkbox"],
+        .checkbox-item input[type="radio"] {
+            width: auto;
+            margin-right: 0.5rem;
+            cursor: pointer;
+        }
+
+        .conditional-field {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #dc143c;
+        }
+
+        .prep-race {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #dc143c;
+        }
+
+        .prep-race-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-remove {
+            background: #dc143c;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .btn-add {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .btn-add:hover, .btn-remove:hover {
+            opacity: 0.8;
         }
 
         .btn-container {
@@ -198,10 +316,6 @@
             margin-left: 1rem;
         }
 
-        .btn-secondary:hover {
-            box-shadow: 0 12px 35px rgba(26, 26, 26, 0.4);
-        }
-
         .plan-container {
             display: none;
             margin-top: 2rem;
@@ -228,7 +342,7 @@
 
         .plan-info {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1rem;
             margin-bottom: 2rem;
         }
@@ -256,24 +370,62 @@
             font-weight: 600;
         }
 
-        .week-card {
+        .period-section {
             background: white;
             border-radius: 20px;
+            padding: 2rem;
             margin-bottom: 2rem;
-            overflow: hidden;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(220, 20, 60, 0.1);
+        }
+
+        .period-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+            color: white;
+            padding: 1.2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .period-description {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #dc143c;
+        }
+
+        .week-card {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e8e8e8;
+        }
+
+        .week-card.race-week {
+            border: 3px solid #dc143c;
+            box-shadow: 0 12px 30px rgba(220, 20, 60, 0.3);
         }
 
         .week-header {
             background: linear-gradient(135deg, #dc143c 0%, #8b0000 100%);
             color: white;
-            padding: 1.5rem;
-            font-size: 1.3rem;
+            padding: 1rem;
+            font-size: 1.1rem;
             font-weight: 700;
             text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        }
+
+        .week-header.race-week-header {
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            color: #1a1a1a;
+            font-size: 1.3rem;
         }
 
         .training-grid {
@@ -285,16 +437,16 @@
         .training-day {
             background: white;
             padding: 1.5rem;
-            border-bottom: 1px solid #f0f0f0;
         }
 
-        .training-day:last-child {
-            border-bottom: none;
+        .training-day.race-day {
+            background: linear-gradient(135deg, #fff9e6 0%, #ffe6cc 100%);
+            border: 2px solid #ffd700;
         }
 
         .day-header {
             display: grid;
-            grid-template-columns: 120px 1fr 100px;
+            grid-template-columns: 100px 1fr 90px;
             gap: 1rem;
             align-items: center;
             margin-bottom: 1rem;
@@ -311,36 +463,46 @@
         .day-name {
             font-weight: 800;
             color: #dc143c;
-            font-size: 1rem;
+            font-size: 0.95rem;
             text-transform: uppercase;
         }
 
         .session-type {
             font-weight: 600;
             color: #1a1a1a;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .session-distance {
             background: #dc143c;
             color: white;
-            padding: 0.3rem 0.8rem;
+            padding: 0.3rem 0.6rem;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-align: center;
+        }
+
+        .shoe-recommendation {
+            background: #1a1a1a;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 0.5rem;
         }
 
         .session-details {
             background: #f8f9fa;
-            border-radius: 15px;
-            padding: 1.5rem;
+            border-radius: 12px;
+            padding: 1.2rem;
             border-left: 4px solid #dc143c;
         }
 
         .session-phase {
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
             border-bottom: 1px solid #e8e8e8;
         }
 
@@ -352,23 +514,22 @@
 
         .phase-title {
             color: #dc143c;
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .phase-content {
             color: #333;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             line-height: 1.5;
         }
 
         .training-purpose {
             background: #fff3f3;
             border: 1px solid #ffd6d6;
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 1rem;
             margin-top: 1rem;
         }
@@ -376,23 +537,36 @@
         .purpose-title {
             color: #8b0000;
             font-weight: 700;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
             text-transform: uppercase;
         }
 
         .purpose-content {
             color: #666;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             line-height: 1.4;
+        }
+
+        .motivational-message {
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            color: #1a1a1a;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+            border: 3px solid #ffd700;
         }
 
         .volume-summary {
             background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
             color: white;
-            padding: 1.5rem;
-            border-radius: 15px;
-            margin: 1.5rem;
+            padding: 1.2rem;
+            border-radius: 12px;
+            margin: 1.2rem;
             text-align: center;
             font-weight: 600;
         }
@@ -427,36 +601,50 @@
             font-size: 1.1rem;
         }
 
-        @media print {
-            body { 
-                background: white; 
-                font-size: 10px;
-            }
-            .hero-section, .form-section, .btn { display: none; }
-            .plan-container { display: block !important; margin: 0; padding: 0; }
-            .week-card { 
-                break-inside: avoid; 
-                margin-bottom: 15px; 
-                box-shadow: none;
-                border: 1px solid #ccc;
-            }
-            .training-day { padding: 10px; }
-            .session-details { padding: 10px; }
-        }
-
         .small-text {
             font-size: 0.8rem;
             color: #666;
             margin-top: 0.3rem;
+        }
+
+        .prep-race-badge {
+            display: inline-block;
+            background: #dc143c;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.2rem;
+        }
+
+        @media print {
+            body { 
+                background: white; 
+                font-size: 9px;
+            }
+            .hero-section, .form-section, .btn { display: none; }
+            .plan-container { display: block !important; margin: 0; padding: 0; }
+            .period-section, .week-card { 
+                break-inside: avoid; 
+                margin-bottom: 10px; 
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            .training-day { padding: 8px; font-size: 8px; }
+            .session-details { padding: 8px; }
         }
     </style>
 </head>
 <body>
     <div class="hero-section">
         <div class="container">
+            <div class="logo-container">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 400'%3E%3Ctext x='350' y='280' font-family='Arial Black' font-size='60' fill='%23dc143c' text-anchor='middle' font-weight='900'%3EOSORNO RUNNERS%3C/text%3E%3C/svg%3E" alt="Osorno Runners Logo" class="logo">
+            </div>
             <div class="hero-content">
-                <h1>🏃‍♂️ RUNNING COACH PRO</h1>
-                <p>Planificación profesional de entrenamiento personalizado</p>
+                <h1>PLANIFICADOR DE ENTRENAMIENTO</h1>
+                <p>Sistema profesional de planificación deportiva</p>
             </div>
         </div>
     </div>
@@ -464,46 +652,168 @@
     <div class="form-section">
         <div class="container">
             <div class="form-card">
-                <h2 class="form-title">Crea Tu Plan de Entrenamiento</h2>
+                <h2 class="form-title">Formulario de Planificación</h2>
                 <form id="trainingForm">
+                    
+                    <!-- DATOS PERSONALES -->
+                    <h3 class="form-section-title">📋 Datos Personales</h3>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="name">Nombre completo</label>
-                            <input type="text" id="name" required placeholder="Ingresa tu nombre">
+                            <label for="name">Nombre completo *</label>
+                            <input type="text" id="name" required placeholder="Ingresa tu nombre completo">
                         </div>
                         <div class="form-group">
-                            <label for="age">Edad</label>
+                            <label for="age">Edad *</label>
                             <input type="number" id="age" min="16" max="80" required placeholder="38">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="experience">Nivel de experiencia</label>
-                            <select id="experience" required>
+                            <label for="experience">Nivel de experiencia *</label>
+                            <select id="experience" required onchange="toggleFirstTimeField()">
                                 <option value="">Selecciona tu nivel</option>
-                                <option value="principiante">Principiante</option>
-                                <option value="intermedio">Intermedio</option>
-                                <option value="avanzado">Avanzado</option>
+                                <option value="principiante">Principiante (0-1 año corriendo)</option>
+                                <option value="intermedio">Intermedio (1-3 años corriendo)</option>
+                                <option value="avanzado">Avanzado (+3 años corriendo)</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="distance">Distancia objetivo</label>
+                            <label for="currentLongRun">Distancia larga actual (km) *</label>
+                            <input type="number" id="currentLongRun" min="3" max="35" required placeholder="10">
+                            <div class="small-text">¿Cuál es la distancia más larga que puedes correr cómodamente ahora?</div>
+                        </div>
+                    </div>
+
+                    <div id="firstTimeField" class="conditional-field">
+                        <label>
+                            <input type="checkbox" id="firstTimeDistance"> 
+                            Es mi primera vez en esta distancia
+                        </label>
+                    </div>
+
+                    <!-- OBJETIVO -->
+                    <h3 class="form-section-title">🎯 Objetivo de Carrera</h3>
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="distance">Distancia objetivo *</label>
                             <select id="distance" required>
-                                <option value="">Selecciona la distancia</option>
+                                <option value="">Selecciona</option>
                                 <option value="5K">5K</option>
                                 <option value="10K">10K</option>
                                 <option value="21K">21K (Medio Maratón)</option>
                                 <option value="42K">42K (Maratón)</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="raceDate">Fecha del objetivo *</label>
+                            <input type="date" id="raceDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pace">Ritmo deseado (min/km) *</label>
+                            <input type="text" id="pace" required placeholder="5:30" pattern="[0-9]:[0-5][0-9]">
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="pace">Ritmo promedio deseado (min/km)</label>
-                        <input type="text" id="pace" required placeholder="5:30" pattern="[0-9]:[0-5][0-9]">
-                        <div class="small-text">Formato: MM:SS (ejemplo: 5:30 para 5 minutos y 30 segundos por kilómetro)</div>
+                        <label for="weeksAvailable">Semanas disponibles *</label>
+                        <input type="number" id="weeksAvailable" min="8" max="32" required placeholder="16">
+                        <div class="small-text">¿Cuántas semanas tienes desde HOY hasta la fecha de tu carrera objetivo?</div>
                     </div>
+
+                    <!-- DISPONIBILIDAD -->
+                    <h3 class="form-section-title">📅 Disponibilidad de Entrenamiento</h3>
+                    <div class="form-group">
+                        <label>Días disponibles para entrenar *</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="trainingDays" value="Lunes"> Lunes
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="trainingDays" value="Martes"> Martes
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="trainingDays" value="Miércoles"> Miércoles
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="trainingDays" value="Jueves"> Jueves
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="trainingDays" value="Viernes"> Viernes
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="trainingDays" value="Sábado"> Sábado
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="trainingDays" value="Domingo"> Domingo
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- ENTRENAMIENTO CRUZADO -->
+                    <h3 class="form-section-title">🚴‍♂️ Entrenamiento Cruzado (Opcional)</h3>
+                    <div class="form-group">
+                        <label>¿Realizas otros deportes complementarios?</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="crossTraining" value="Ciclismo"> Ciclismo
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="crossTraining" value="Natación"> Natación
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="crossTraining" value="Gimnasio"> Gimnasio
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="crossTraining" value="Yoga"> Yoga
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="crossTraining" value="Otro"> Otro
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- MONITOREO -->
+                    <h3 class="form-section-title">⌚ Monitoreo y Tecnología</h3>
+                    <div class="form-group">
+                        <label>¿Posees reloj deportivo?</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="radio" name="hasWatch" value="si" onchange="toggleWatchFields()"> Sí
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="radio" name="hasWatch" value="no" onchange="toggleWatchFields()"> No
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="watchFields" class="conditional-field">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="hrMax">FC Máxima (bpm)</label>
+                                <input type="number" id="hrMax" min="120" max="220" placeholder="185">
+                                <div class="small-text">Si no la conoces, se calculará con: 220 - edad</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="hrRest">FC en Reposo (bpm)</label>
+                                <input type="number" id="hrRest" min="30" max="100" placeholder="60">
+                                <div class="small-text">Mídela en la mañana antes de levantarte</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="vo2max">VO2 Max (ml/kg/min)</label>
+                            <input type="number" id="vo2max" min="20" max="90" step="0.1" placeholder="45.5">
+                            <div class="small-text">Si tu reloj lo mide, ingrésalo aquí (opcional)</div>
+                        </div>
+                    </div>
+
+                    <!-- CARRERAS PREPARATORIAS -->
+                    <h3 class="form-section-title">🏁 Carreras Preparatorias (Opcional)</h3>
+                    <div class="small-text" style="margin-bottom: 1rem;">Agregar carreras de preparación te ayudará a medir tu progreso y ajustar ritmos</div>
+                    <div id="prepRacesContainer">
+                        <!-- Las carreras se agregarán aquí dinámicamente -->
+                    </div>
+                    <button type="button" class="btn-add" onclick="addPrepRace()">➕ Agregar Carrera Preparatoria</button>
 
                     <div class="btn-container">
                         <button type="submit" class="btn">Generar Plan de Entrenamiento</button>
@@ -522,266 +832,519 @@
         <div class="plan-container" id="planContainer">
             <div class="plan-header">
                 <h2>Tu Plan de Entrenamiento Personalizado</h2>
-                <div class="plan-info" id="planInfo">
-                    <!-- Plan info will be populated here -->
-                </div>
+                <div class="plan-info" id="planInfo"></div>
                 <div class="btn-container">
                     <button onclick="generatePDF()" class="btn btn-secondary">📄 Descargar PDF</button>
                 </div>
             </div>
-            <div id="trainingPlan">
-                <!-- Training plan will be populated here -->
-            </div>
+            <div id="trainingPlan"></div>
         </div>
     </div>
 
     <script>
         let currentPlan = null;
+        let prepRaceCounter = 0;
+
+        function toggleFirstTimeField() {
+            const experience = document.getElementById('experience').value;
+            const field = document.getElementById('firstTimeField');
+            if (experience === 'principiante') {
+                field.style.display = 'block';
+            } else {
+                field.style.display = 'none';
+                document.getElementById('firstTimeDistance').checked = false;
+            }
+        }
+
+        function toggleWatchFields() {
+            const hasWatch = document.querySelector('input[name="hasWatch"]:checked');
+            const field = document.getElementById('watchFields');
+            if (hasWatch && hasWatch.value === 'si') {
+                field.style.display = 'block';
+            } else {
+                field.style.display = 'none';
+            }
+        }
+
+        function addPrepRace() {
+            prepRaceCounter++;
+            const container = document.getElementById('prepRacesContainer');
+            const raceDiv = document.createElement('div');
+            raceDiv.className = 'prep-race';
+            raceDiv.id = `prepRace${prepRaceCounter}`;
+            raceDiv.innerHTML = `
+                <div class="prep-race-header">
+                    <strong>Carrera ${prepRaceCounter}</strong>
+                    <button type="button" class="btn-remove" onclick="removePrepRace(${prepRaceCounter})">✕ Eliminar</button>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label>Distancia</label>
+                        <select class="prep-race-distance">
+                            <option value="5K">5K</option>
+                            <option value="10K">10K</option>
+                            <option value="15K">15K</option>
+                            <option value="21K">21K</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha estimada</label>
+                        <input type="date" class="prep-race-date">
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre (opcional)</label>
+                        <input type="text" class="prep-race-name" placeholder="Ej: Carrera de la Ciudad">
+                    </div>
+                </div>
+            `;
+            container.appendChild(raceDiv);
+        }
+
+        function removePrepRace(id) {
+            const element = document.getElementById(`prepRace${id}`);
+            if (element) element.remove();
+        }
 
         document.getElementById('trainingForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Show loading
+            const selectedDays = Array.from(document.querySelectorAll('input[name="trainingDays"]:checked'));
+            if (selectedDays.length < 3) {
+                alert('Por favor selecciona al menos 3 días de entrenamiento.');
+                return;
+            }
+            
             document.getElementById('loading').style.display = 'block';
             document.getElementById('planContainer').style.display = 'none';
             
-            // Get form data
-            const formData = {
-                name: document.getElementById('name').value,
-                age: parseInt(document.getElementById('age').value),
-                experience: document.getElementById('experience').value,
-                distance: document.getElementById('distance').value,
-                pace: document.getElementById('pace').value
-            };
+            const formData = collectFormData();
             
-            // Generate plan
             setTimeout(() => {
                 currentPlan = generateTrainingPlan(formData);
                 displayPlan(currentPlan);
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('planContainer').style.display = 'block';
                 document.getElementById('planContainer').scrollIntoView({ behavior: 'smooth' });
-            }, 2000);
+            }, 2500);
         });
 
-        function generateTrainingPlan(data) {
-            const plans = {
-                '5K': {
-                    weeks: 8,
-                    sessions: [
-                        { day: 'Lunes', type: 'Trote fácil', distance: '3-4 km' },
-                        { day: 'Martes', type: 'Intervalos', distance: '4-5 km' },
-                        { day: 'Miércoles', type: 'Descanso activo', distance: '3 km' },
-                        { day: 'Jueves', type: 'Tempo run', distance: '4-5 km' },
-                        { day: 'Viernes', type: 'Descanso', distance: '0 km' },
-                        { day: 'Sábado', type: 'Carrera larga', distance: '5-6 km' },
-                        { day: 'Domingo', type: 'Recuperación', distance: '3 km' }
-                    ]
-                },
-                '10K': {
-                    weeks: 10,
-                    sessions: [
-                        { day: 'Lunes', type: 'Trote fácil', distance: '5-6 km' },
-                        { day: 'Martes', type: 'Intervalos', distance: '6-7 km' },
-                        { day: 'Miércoles', type: 'Descanso activo', distance: '4 km' },
-                        { day: 'Jueves', type: 'Tempo run', distance: '6-7 km' },
-                        { day: 'Viernes', type: 'Descanso', distance: '0 km' },
-                        { day: 'Sábado', type: 'Carrera larga', distance: '8-10 km' },
-                        { day: 'Domingo', type: 'Recuperación', distance: '4 km' }
-                    ]
-                },
-                '21K': {
-                    weeks: 12,
-                    sessions: [
-                        { day: 'Lunes', type: 'Trote fácil', distance: '6-8 km' },
-                        { day: 'Martes', type: 'Intervalos', distance: '8-10 km' },
-                        { day: 'Miércoles', type: 'Descanso activo', distance: '5 km' },
-                        { day: 'Jueves', type: 'Tempo run', distance: '8-10 km' },
-                        { day: 'Viernes', type: 'Descanso', distance: '0 km' },
-                        { day: 'Sábado', type: 'Carrera larga', distance: '12-18 km' },
-                        { day: 'Domingo', type: 'Recuperación', distance: '5-6 km' }
-                    ]
-                },
-                '42K': {
-                    weeks: 16,
-                    sessions: [
-                        { day: 'Lunes', type: 'Trote fácil', distance: '8-10 km' },
-                        { day: 'Martes', type: 'Intervalos', distance: '10-12 km' },
-                        { day: 'Miércoles', type: 'Descanso activo', distance: '6 km' },
-                        { day: 'Jueves', type: 'Tempo run', distance: '10-12 km' },
-                        { day: 'Viernes', type: 'Descanso', distance: '0 km' },
-                        { day: 'Sábado', type: 'Carrera larga', distance: '18-32 km' },
-                        { day: 'Domingo', type: 'Recuperación', distance: '6-8 km' }
-                    ]
+        function collectFormData() {
+            const prepRaces = [];
+            document.querySelectorAll('.prep-race').forEach(race => {
+                const distance = race.querySelector('.prep-race-distance').value;
+                const date = race.querySelector('.prep-race-date').value;
+                const name = race.querySelector('.prep-race-name').value;
+                if (date) {
+                    prepRaces.push({ distance, date, name: name || `Carrera ${distance}` });
                 }
-            };
+            });
 
-            const basePlan = plans[data.distance];
-            const adjustedPlan = adjustPlanByExperience(basePlan, data.experience);
+            const selectedDays = Array.from(document.querySelectorAll('input[name="trainingDays"]:checked'))
+                .map(cb => cb.value);
+
+            const crossTraining = Array.from(document.querySelectorAll('input[name="crossTraining"]:checked'))
+                .map(cb => cb.value);
+
+            const hasWatch = document.querySelector('input[name="hasWatch"]:checked');
+            const watchData = hasWatch && hasWatch.value === 'si';
+
+            const hrMax = watchData && document.getElementById('hrMax').value ? 
+                parseInt(document.getElementById('hrMax').value) : 
+                (220 - parseInt(document.getElementById('age').value));
+            
+            return {
+                name: document.getElementById('name').value,
+                age: parseInt(document.getElementById('age').value),
+                experience: document.getElementById('experience').value,
+                firstTimeDistance: document.getElementById('firstTimeDistance').checked,
+                currentLongRun: parseInt(document.getElementById('currentLongRun').value),
+                distance: document.getElementById('distance').value,
+                raceDate: document.getElementById('raceDate').value,
+                pace: document.getElementById('pace').value,
+                weeksAvailable: parseInt(document.getElementById('weeksAvailable').value),
+                trainingDays: selectedDays,
+                crossTraining: crossTraining,
+                hasWatch: watchData,
+                hrMax: hrMax,
+                hrRest: watchData && document.getElementById('hrRest').value ? 
+                    parseInt(document.getElementById('hrRest').value) : null,
+                vo2max: watchData && document.getElementById('vo2max').value ? 
+                    parseFloat(document.getElementById('vo2max').value) : null,
+                prepRaces: prepRaces
+            };
+        }
+
+        function generateTrainingPlan(data) {
+            const periods = calculatePeriods(data.weeksAvailable, data.distance);
+            const weeklyPlans = generateWeeklyPlansWithPeriods(data, periods);
             
             return {
                 userData: data,
-                weeks: adjustedPlan.weeks,
-                sessions: adjustedPlan.sessions,
-                weeklyPlans: generateWeeklyPlans(adjustedPlan, data)
+                periods: periods,
+                weeklyPlans: weeklyPlans,
+                totalWeeks: data.weeksAvailable
             };
         }
 
-        function adjustPlanByExperience(plan, experience) {
-            const multipliers = {
-                'principiante': 0.8,
-                'intermedio': 1.0,
-                'avanzado': 1.2
-            };
-
-            const multiplier = multipliers[experience];
+        function calculatePeriods(totalWeeks, distance) {
+            let periods = {};
             
-            return {
-                ...plan,
-                sessions: plan.sessions.map(session => ({
-                    ...session,
-                    distance: adjustDistance(session.distance, multiplier)
-                }))
-            };
-        }
-
-        function adjustDistance(distance, multiplier) {
-            if (distance === '0 km') return distance;
-            
-            const parts = distance.split('-');
-            if (parts.length === 2) {
-                const min = Math.round(parseInt(parts[0]) * multiplier);
-                const max = Math.round(parseInt(parts[1].replace(' km', '')) * multiplier);
-                return `${min}-${max} km`;
+            if (distance === '42K') {
+                if (totalWeeks >= 20) {
+                    periods = {
+                        basico: { weeks: Math.floor(totalWeeks * 0.30), name: 'Período Base' },
+                        especifico: { weeks: Math.floor(totalWeeks * 0.45), name: 'Período Específico' },
+                        competencia: { weeks: Math.floor(totalWeeks * 0.20), name: 'Período de Competencia' },
+                        transicion: { weeks: Math.floor(totalWeeks * 0.05), name: 'Período de Transición' }
+                    };
+                } else {
+                    periods = {
+                        basico: { weeks: Math.floor(totalWeeks * 0.35), name: 'Período Base' },
+                        especifico: { weeks: Math.floor(totalWeeks * 0.40), name: 'Período Específico' },
+                        competencia: { weeks: Math.floor(totalWeeks * 0.20), name: 'Período de Competencia' },
+                        transicion: { weeks: Math.floor(totalWeeks * 0.05), name: 'Período de Transición' }
+                    };
+                }
+            } else if (distance === '21K') {
+                if (totalWeeks >= 16) {
+                    periods = {
+                        basico: { weeks: Math.floor(totalWeeks * 0.35), name: 'Período Base' },
+                        especifico: { weeks: Math.floor(totalWeeks * 0.40), name: 'Período Específico' },
+                        competencia: { weeks: Math.floor(totalWeeks * 0.20), name: 'Período de Competencia' },
+                        transicion: { weeks: Math.floor(totalWeeks * 0.05), name: 'Período de Transición' }
+                    };
+                } else {
+                    periods = {
+                        basico: { weeks: Math.floor(totalWeeks * 0.40), name: 'Período Base' },
+                        especifico: { weeks: Math.floor(totalWeeks * 0.35), name: 'Período Específico' },
+                        competencia: { weeks: Math.floor(totalWeeks * 0.20), name: 'Período de Competencia' },
+                        transicion: { weeks: Math.floor(totalWeeks * 0.05), name: 'Período de Transición' }
+                    };
+                }
+            } else if (distance === '10K') {
+                periods = {
+                    basico: { weeks: Math.floor(totalWeeks * 0.40), name: 'Período Base' },
+                    especifico: { weeks: Math.floor(totalWeeks * 0.35), name: 'Período Específico' },
+                    competencia: { weeks: Math.floor(totalWeeks * 0.20), name: 'Período de Competencia' },
+                    transicion: { weeks: Math.floor(totalWeeks * 0.05), name: 'Período de Transición' }
+                };
             } else {
-                const value = Math.round(parseInt(distance.replace(' km', '')) * multiplier);
-                return `${value} km`;
+                periods = {
+                    basico: { weeks: Math.floor(totalWeeks * 0.45), name: 'Período Base' },
+                    especifico: { weeks: Math.floor(totalWeeks * 0.30), name: 'Período Específico' },
+                    competencia: { weeks: Math.floor(totalWeeks * 0.20), name: 'Período de Competencia' },
+                    transicion: { weeks: Math.floor(totalWeeks * 0.05), name: 'Período de Transición' }
+                };
             }
+            
+            const sum = Object.values(periods).reduce((acc, p) => acc + p.weeks, 0);
+            if (sum < totalWeeks) {
+                periods.especifico.weeks += (totalWeeks - sum);
+            }
+            
+            return periods;
         }
 
-        function generateWeeklyPlans(plan, userData) {
+        function generateWeeklyPlansWithPeriods(data, periods) {
             const weeks = [];
-            const paceComponents = userData.pace.split(':');
+            let currentWeek = 1;
+            const paceComponents = data.pace.split(':');
             const targetPaceSeconds = parseInt(paceComponents[0]) * 60 + parseInt(paceComponents[1]);
             
-            for (let week = 1; week <= plan.weeks; week++) {
-                const weekPlan = {
-                    week: week,
-                    sessions: plan.sessions.map(session => {
-                        return generateSessionDetail(session, week, plan.weeks, userData, targetPaceSeconds);
-                    })
-                };
-                
-                // Calculate total weekly volume
-                let totalKm = 0;
-                weekPlan.sessions.forEach(session => {
-                    if (session.distance && session.distance !== '0 km') {
-                        const distanceStr = session.distance.split('-');
-                        const avgDistance = distanceStr.length === 2 ? 
-                            (parseInt(distanceStr[0]) + parseInt(distanceStr[1].replace(' km', ''))) / 2 :
-                            parseInt(session.distance.replace(' km', ''));
-                        totalKm += avgDistance;
+            // Calcular semana de la carrera objetivo
+            const raceWeek = data.weeksAvailable;
+            
+            for (let i = 0; i < periods.basico.weeks; i++, currentWeek++) {
+                weeks.push(generateWeekPlan(currentWeek, 'basico', data, targetPaceSeconds, periods.basico.weeks, i, raceWeek));
+            }
+            
+            for (let i = 0; i < periods.especifico.weeks; i++, currentWeek++) {
+                weeks.push(generateWeekPlan(currentWeek, 'especifico', data, targetPaceSeconds, periods.especifico.weeks, i, raceWeek));
+            }
+            
+            for (let i = 0; i < periods.competencia.weeks; i++, currentWeek++) {
+                weeks.push(generateWeekPlan(currentWeek, 'competencia', data, targetPaceSeconds, periods.competencia.weeks, i, raceWeek));
+            }
+            
+            for (let i = 0; i < periods.transicion.weeks; i++, currentWeek++) {
+                weeks.push(generateWeekPlan(currentWeek, 'transicion', data, targetPaceSeconds, periods.transicion.weeks, i, raceWeek));
+            }
+            
+            weeks.forEach(week => {
+                data.prepRaces.forEach(race => {
+                    const raceWeekNum = calculateWeekFromDate(data.raceDate, race.date, data.weeksAvailable);
+                    if (week.week === raceWeekNum) {
+                        week.prepRace = race;
                     }
                 });
-                weekPlan.totalKm = Math.round(totalKm);
-                
-                weeks.push(weekPlan);
-            }
+            });
             
             return weeks;
         }
 
-        function generateSessionDetail(session, week, totalWeeks, userData, targetPaceSeconds) {
-            const sessionDetails = {
-                day: session.day,
-                type: session.type,
-                distance: session.distance,
-                details: generateSessionDescription(session.type, week, totalWeeks, userData, targetPaceSeconds),
-                purpose: getSessionPurpose(session.type)
+        function calculateWeekFromDate(raceDate, prepDate, totalWeeks) {
+            const race = new Date(raceDate);
+            const prep = new Date(prepDate);
+            const diffTime = race - prep;
+            const diffWeeks = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 7));
+            return totalWeeks - diffWeeks;
+        }
+
+        function generateWeekPlan(weekNum, period, data, targetPaceSeconds, periodWeeks, weekInPeriod, raceWeek) {
+            const sessions = [];
+            const trainingDays = data.trainingDays;
+            const progressFactor = (weekInPeriod + 1) / periodWeeks;
+            const baseDistances = getBaseDistances(period, data.distance, data.currentLongRun, progressFactor, data.firstTimeDistance);
+            const sessionTypes = assignSessionsToDays(trainingDays, period, data.distance, data.crossTraining);
+            
+            const isRaceWeek = weekNum === raceWeek;
+            
+            trainingDays.forEach((day, index) => {
+                const sessionType = sessionTypes[index];
+                const session = {
+                    day: day,
+                    type: sessionType.type,
+                    distance: sessionType.distance || baseDistances[sessionType.type] || '5 km',
+                    details: generateSessionDescription(sessionType.type, period, targetPaceSeconds, data.hrMax, data.crossTraining),
+                    purpose: getSessionPurpose(sessionType.type),
+                    shoeRecommendation: getShoeRecommendation(sessionType.type)
+                };
+                
+                if (isRaceWeek && index === trainingDays.length - 1) {
+                    session.isRaceDay = true;
+                    session.type = `CARRERA OBJETIVO - ${data.distance}`;
+                    session.distance = data.distance;
+                    session.motivationalMessage = getMotivationalMessage(data.name, data.distance);
+                }
+                
+                sessions.push(session);
+            });
+            
+            let totalKm = 0;
+            sessions.forEach(session => {
+                const dist = parseInt(session.distance.replace(/[^\d]/g, '')) || 0;
+                totalKm += dist;
+            });
+            
+            return {
+                week: weekNum,
+                period: period,
+                sessions: sessions,
+                totalKm: totalKm,
+                isRaceWeek: isRaceWeek
+            };
+        }
+
+        function getBaseDistances(period, targetDistance, currentLongRun, progressFactor, isFirstTime) {
+            const modifier = isFirstTime ? 0.9 : 1.0;
+            
+            const distances = {
+                'basico': {
+                    '5K': { 
+                        easy: `${Math.round(4 * modifier)} km`, 
+                        interval: `${Math.round(5 * modifier)} km`, 
+                        tempo: `${Math.round(5 * modifier)} km`, 
+                        long: `${Math.round((currentLongRun + progressFactor * 2) * modifier)} km` 
+                    },
+                    '10K': { 
+                        easy: `${Math.round(6 * modifier)} km`, 
+                        interval: `${Math.round(7 * modifier)} km`, 
+                        tempo: `${Math.round(7 * modifier)} km`, 
+                        long: `${Math.round((currentLongRun + progressFactor * 4) * modifier)} km` 
+                    },
+                    '21K': { 
+                        easy: `${Math.round(8 * modifier)} km`, 
+                        interval: `${Math.round(9 * modifier)} km`, 
+                        tempo: `${Math.round(9 * modifier)} km`, 
+                        long: `${Math.round((currentLongRun + progressFactor * 8) * modifier)} km` 
+                    },
+                    '42K': { 
+                        easy: `${Math.round(10 * modifier)} km`, 
+                        interval: `${Math.round(11 * modifier)} km`, 
+                        tempo: `${Math.round(11 * modifier)} km`, 
+                        long: `${Math.round((currentLongRun + progressFactor * 12) * modifier)} km` 
+                    }
+                },
+                'especifico': {
+                    '5K': { easy: '5 km', interval: '6 km', tempo: '6 km', long: `${Math.round(7 + progressFactor * 2)} km` },
+                    '10K': { easy: '7 km', interval: '8 km', tempo: '8 km', long: `${Math.round(12 + progressFactor * 4)} km` },
+                    '21K': { easy: '9 km', interval: '10 km', tempo: '12 km', long: `${Math.round(16 + progressFactor * 8)} km` },
+                    '42K': { easy: '12 km', interval: '13 km', tempo: '15 km', long: `${Math.round(25 + progressFactor * 12)} km` }
+                },
+                'competencia': {
+                    '5K': { easy: '4 km', interval: '5 km', tempo: '5 km', long: '6 km' },
+                    '10K': { easy: '6 km', interval: '7 km', tempo: '7 km', long: '10 km' },
+                    '21K': { easy: '8 km', interval: '10 km', tempo: '10 km', long: '18 km' },
+                    '42K': { easy: '10 km', interval: '12 km', tempo: '15 km', long: '30 km' }
+                },
+                'transicion': {
+                    '5K': { easy: '3 km', interval: '0 km', tempo: '0 km', long: '4 km', recovery: '3 km' },
+                    '10K': { easy: '4 km', interval: '0 km', tempo: '0 km', long: '6 km', recovery: '4 km' },
+                    '21K': { easy: '5 km', interval: '0 km', tempo: '0 km', long: '8 km', recovery: '5 km' },
+                    '42K': { easy: '6 km', interval: '0 km', tempo: '0 km', long: '10 km', recovery: '6 km' }
+                }
             };
             
-            return sessionDetails;
+            return distances[period][targetDistance];
+        }
+
+        function assignSessionsToDays(trainingDays, period, targetDistance, crossTraining) {
+            const sessions = [];
+            const numDays = trainingDays.length;
+            const hasCrossTraining = crossTraining.length > 0;
+            
+            if (period === 'basico') {
+                for (let i = 0; i < numDays; i++) {
+                    if (i === 0) sessions.push({ type: 'Trote fácil' });
+                    else if (i === 1 && hasCrossTraining) sessions.push({ type: 'Descanso activo' });
+                    else if (i === 1) sessions.push({ type: 'Tempo run' });
+                    else if (i === 2) sessions.push({ type: 'Descanso activo' });
+                    else if (i === numDays - 1) sessions.push({ type: 'Carrera larga' });
+                    else sessions.push({ type: 'Trote fácil' });
+                }
+            } else if (period === 'especifico') {
+                for (let i = 0; i < numDays; i++) {
+                    if (i === 0) sessions.push({ type: 'Trote fácil' });
+                    else if (i === 1) sessions.push({ type: 'Intervalos' });
+                    else if (i === 2) sessions.push({ type: 'Descanso activo' });
+                    else if (i === 3) sessions.push({ type: 'Tempo run' });
+                    else if (i === numDays - 1) sessions.push({ type: 'Carrera larga' });
+                    else sessions.push({ type: 'Recuperación' });
+                }
+            } else if (period === 'competencia') {
+                for (let i = 0; i < numDays; i++) {
+                    if (i === 0) sessions.push({ type: 'Trote fácil' });
+                    else if (i === 1) sessions.push({ type: 'Intervalos' });
+                    else if (i === 2) sessions.push({ type: 'Descanso activo' });
+                    else if (i === 3) sessions.push({ type: 'Tempo run' });
+                    else if (i === numDays - 1) sessions.push({ type: 'Carrera larga' });
+                    else sessions.push({ type: 'Recuperación' });
+                }
+            } else {
+                for (let i = 0; i < numDays; i++) {
+                    if (i === 0) sessions.push({ type: 'Descanso' });
+                    else if (i === numDays - 1) sessions.push({ type: 'Trote fácil' });
+                    else sessions.push({ type: 'Recuperación' });
+                }
+            }
+            
+            return sessions;
+        }
+
+        function generateSessionDescription(type, period, targetPaceSeconds, hrMax, crossTraining) {
+            const easyPace = formatPace(targetPaceSeconds + 30);
+            const tempoPace = formatPace(targetPaceSeconds - 10);
+            const intervalPace = formatPace(targetPaceSeconds - 20);
+            
+            const hrZones = {
+                recovery: `${Math.round(hrMax * 0.60)}-${Math.round(hrMax * 0.70)} bpm`,
+                easy: `${Math.round(hrMax * 0.65)}-${Math.round(hrMax * 0.75)} bpm`,
+                tempo: `${Math.round(hrMax * 0.80)}-${Math.round(hrMax * 0.85)} bpm`,
+                interval: `${Math.round(hrMax * 0.85)}-${Math.round(hrMax * 0.90)} bpm`
+            };
+
+            const crossTrainingOptions = crossTraining.length > 0 ? 
+                ` Opciones: ${crossTraining.join(', ')}` : '';
+            
+            const descriptions = {
+                'Trote fácil': {
+                    warmup: `10 min caminata dinámica + 5 min trote suave`,
+                    main: `Trote continuo a ${easyPace}/km. FC: ${hrZones.easy}. Conversación fácil.`,
+                    cooldown: `5 min caminata + 10 min estiramientos estáticos`
+                },
+                'Intervalos': {
+                    warmup: `15 min trote fácil + 6 ejercicios dinámicos + 4 progresivos 100m`,
+                    main: `6-8x400m a ${intervalPace}/km con 90 seg recuperación. FC: ${hrZones.interval}`,
+                    cooldown: `10 min trote suave + 15 min estiramientos completos`
+                },
+                'Descanso activo': {
+                    warmup: `5 min caminata ligera o movilidad`,
+                    main: `Trote muy suave a ${formatPace(targetPaceSeconds + 60)}/km o cross-training (30-45 min). FC: ${hrZones.recovery}.${crossTrainingOptions}`,
+                    cooldown: `10 min estiramientos + movilidad + rodillo espuma`
+                },
+                'Tempo run': {
+                    warmup: `15 min trote fácil + 4 progresivos de 100m`,
+                    main: `20-30 min a ${tempoPace}/km. FC: ${hrZones.tempo}. Ritmo sostenido "cómodamente duro".`,
+                    cooldown: `10 min trote fácil + 15 min estiramientos`
+                },
+                'Descanso': {
+                    warmup: `Día de descanso completo`,
+                    main: `Descanso total. Masaje/kinesiología si está programado. Enfoque en recuperación.`,
+                    cooldown: `Hidratación y nutrición para recuperación óptima`
+                },
+                'Carrera larga': {
+                    warmup: `15 min trote muy fácil + movilidad completa + activación glúteos`,
+                    main: `Carrera continua a ${formatPace(targetPaceSeconds + 20)}/km. FC: ${hrZones.easy}. Hidratación cada 20 min (200ml). Gel cada 45 min si >90 min.`,
+                    cooldown: `10 min caminata + 20 min estiramientos profundos + rodillo espuma + hidratación con electrolitos`
+                },
+                'Recuperación': {
+                    warmup: `5 min caminata suave con respiraciones profundas`,
+                    main: `Trote muy fácil a ${formatPace(targetPaceSeconds + 50)}/km. FC: ${hrZones.recovery}. Enfoque total en recuperación.`,
+                    cooldown: `15 min estiramientos suaves + fortalecimiento core (plancha, puente) + baño contraste si es posible`
+                }
+            };
+            
+            return descriptions[type] || descriptions['Trote fácil'];
         }
 
         function getSessionPurpose(type) {
             const purposes = {
                 'Trote fácil': {
                     title: '🎯 Objetivo del Trote Fácil',
-                    content: 'Desarrolla tu base aeróbica y mejora la eficiencia cardiovascular. Este ritmo permite que tu cuerpo se adapte al estrés del running mientras favorece la recuperación activa. Fortalece tendones, ligamentos y músculos de forma progresiva.'
+                    content: 'Desarrolla base aeróbica y eficiencia cardiovascular. Fortalece tendones, ligamentos y músculos progresivamente sin generar fatiga excesiva.'
                 },
                 'Intervalos': {
                     title: '🎯 Objetivo de los Intervalos',
-                    content: 'Mejora tu VO2 máximo y potencia anaeróbica. Los intervalos aumentan tu capacidad de procesar oxígeno y te permiten correr a ritmos más rápidos por períodos más largos. Esencial para mejorar tu velocidad y resistencia a la velocidad.'
+                    content: 'Mejora VO2 máximo y potencia anaeróbica. Aumenta capacidad de procesar oxígeno y mantener ritmos rápidos por más tiempo.'
                 },
                 'Descanso activo': {
                     title: '🎯 Objetivo del Descanso Activo',
-                    content: 'Facilita la recuperación muscular manteniendo el flujo sanguíneo. Ayuda a eliminar metabolitos de desecho del entrenamiento intenso anterior, mantiene la movilidad articular y prepara el cuerpo para el próximo entrenamiento exigente.'
+                    content: 'Facilita recuperación muscular manteniendo flujo sanguíneo. Elimina metabolitos y mantiene movilidad sin generar fatiga. Ideal para entrenamiento cruzado.'
                 },
                 'Tempo run': {
                     title: '🎯 Objetivo del Tempo Run',
-                    content: 'Mejora tu umbral de lactato y resistencia anaeróbica. Este ritmo "cómodamente duro" entrena a tu cuerpo para mantener un esfuerzo sostenido, mejorando tu capacidad de correr más rápido durante más tiempo sin acumular lactato.'
+                    content: 'Mejora umbral de lactato y resistencia anaeróbica. Entrena al cuerpo para mantener esfuerzo sostenido sin acumular lactato.'
                 },
                 'Descanso': {
                     title: '🎯 Objetivo del Descanso',
-                    content: 'Permite la regeneración completa de fibras musculares y reposición de glucógeno. El descanso total es crucial para la adaptación y prevención de lesiones. Tu cuerpo se fortalece durante el descanso, no durante el entrenamiento.'
+                    content: 'Regeneración completa de fibras musculares y reposición de glucógeno. El cuerpo se fortalece durante el descanso, crucial para adaptación.'
                 },
                 'Carrera larga': {
                     title: '🎯 Objetivo de la Carrera Larga',
-                    content: 'Desarrolla resistencia aeróbica y eficiencia energética. Mejora la capacidad de utilizar grasa como combustible, fortalece el sistema musculoesquelético y prepara mental y físicamente para la distancia objetivo. Base fundamental del entrenamiento de resistencia.'
+                    content: 'Desarrolla resistencia aeróbica y eficiencia energética. Mejora uso de grasa como combustible y prepara mental y físicamente para la distancia.'
                 },
                 'Recuperación': {
                     title: '🎯 Objetivo de la Recuperación',
-                    content: 'Mantiene el ritmo de entrenamiento mientras permite recuperación activa. Mejora la circulación sanguínea para eliminar toxinas, mantiene la mecánica de carrera y prepara las piernas para la semana siguiente sin generar fatiga adicional.'
+                    content: 'Mantiene ritmo de entrenamiento con recuperación activa. Mejora circulación para eliminar toxinas y mantiene mecánica sin fatiga adicional.'
                 }
             };
             
             return purposes[type] || purposes['Trote fácil'];
         }
 
-        function generateSessionDescription(type, week, totalWeeks, userData, targetPaceSeconds) {
-            const easyPace = formatPace(targetPaceSeconds + 30);
-            const tempoPace = formatPace(targetPaceSeconds - 10);
-            const intervalPace = formatPace(targetPaceSeconds - 20);
-            
-            const descriptions = {
-                'Trote fácil': {
-                    warmup: `Calentamiento: 10 min caminata dinámica + 5 min trote suave a ${formatPace(targetPaceSeconds + 45)}`,
-                    main: `Desarrollo: Trote continuo a ritmo cómodo ${easyPace}/km. FC: 65-75% FCmáx. Debes poder mantener una conversación.`,
-                    cooldown: `Enfriamiento: 5 min caminata + 10 min estiramientos estáticos enfocando gemelos, cuádriceps y glúteos.`
-                },
-                'Intervalos': {
-                    warmup: `Calentamiento: 15 min trote fácil a ${easyPace}/km + 6 ejercicios dinámicos + 4 progresivos de 100m`,
-                    main: `Desarrollo: 6x400m a ${intervalPace}/km con 90 seg recuperación trotando suave. FC: 85-90% FCmáx. Mantén la forma técnica.`,
-                    cooldown: `Enfriamiento: 10 min trote muy suave + 15 min estiramientos completos + hidratación`
-                },
-                'Descanso activo': {
-                    warmup: `Calentamiento: 5 min caminata ligera con movilidad articular`,
-                    main: `Desarrollo: Trote muy suave a ${formatPace(targetPaceSeconds + 60)}/km o cross-training (bicicleta 30min/natación 20min). FC: 60-70% FCmáx`,
-                    cooldown: `Enfriamiento: 10 min estiramientos + ejercicios de movilidad + rodillo de espuma en piernas`
-                },
-                'Tempo run': {
-                    warmup: `Calentamiento: 15 min trote fácil a ${easyPace}/km + 4 progresivos de 100m aumentando ritmo gradualmente`,
-                    main: `Desarrollo: 20-30 min a ritmo de umbral ${tempoPace}/km. FC: 80-85% FCmáx. Ritmo sostenido "cómodamente duro".`,
-                    cooldown: `Enfriamiento: 10 min trote fácil disminuyendo gradualmente + 15 min estiramientos + hidratación`
-                },
-                'Descanso': {
-                    warmup: `Día de descanso completo para regeneración`,
-                    main: `Actividad: Descanso total. Considera masaje deportivo o sesión de kinesiología si hay molestias.`,
-                    cooldown: `Nutrición: Enfócate en hidratación, proteínas para recuperación muscular y carbohidratos complejos`
-                },
-                'Carrera larga': {
-                    warmup: `Calentamiento: 15 min trote muy fácil + movilidad articular completa + activación glúteos`,
-                    main: `Desarrollo: Carrera continua a ${formatPace(targetPaceSeconds + 20)}/km. FC: 70-80% FCmáx. Hidratación cada 20 min (200ml). Gel energético cada 45 min si supera 90 min.`,
-                    cooldown: `Enfriamiento: 10 min caminata + 20 min estiramientos profundos + rodillo de espuma + hidratación con electrolitos`
-                },
-                'Recuperación': {
-                    warmup: `Calentamiento: 5 min caminata suave con respiraciones profundas`,
-                    main: `Desarrollo: Trote muy fácil a ${formatPace(targetPaceSeconds + 50)}/km. FC: 60-70% FCmáx. Enfoque total en recuperación, no en rendimiento.`,
-                    cooldown: `Enfriamiento: 15 min estiramientos suaves + ejercicios de fortalecimiento core (plancha, puente glúteos) + baño de contraste si es posible`
-                }
+        function getShoeRecommendation(type) {
+            const shoes = {
+                'Trote fácil': '👟 Zapatilla: Entrenamiento diario / Mixta',
+                'Intervalos': '👟 Zapatilla: Voladora / Competencia',
+                'Descanso activo': '👟 Zapatilla: Entrenamiento diario',
+                'Tempo run': '👟 Zapatilla: Mixta / Tempo',
+                'Descanso': '',
+                'Carrera larga': '👟 Zapatilla: Entrenamiento diario / Maximalista',
+                'Recuperación': '👟 Zapatilla: Entrenamiento diario'
             };
             
-            return descriptions[type] || descriptions['Trote fácil'];
+            return shoes[type] || '';
+        }
+
+        function getMotivationalMessage(name, distance) {
+            const messages = {
+                '5K': `¡Hoy es tu día, ${name}! Has entrenado duro para esto. Confía en tu preparación, mantén tu ritmo y disfruta cada zancada. ¡A por esos 5K! 🏃‍♂️💪🔥`,
+                '10K': `¡${name}, llegó el momento! Todo el trabajo duro te trajo hasta aquí. Sal con confianza, mantén tu estrategia y termina fuerte. ¡Esos 10K son tuyos! 🏃‍♂️💪🔥`,
+                '21K': `¡Es tu día de gloria, ${name}! Has corrido cientos de kilómetros para este momento. Confía en tu entrenamiento, respeta el medio maratón pero no le temas. Sal con inteligencia, mantén tu ritmo y cruza esa meta con la cabeza en alto. ¡A conquistar esos 21K! 🏃‍♂️💪🔥🎯`,
+                '42K': `¡${name}, hoy escribes tu historia en el maratón! Cada kilómetro entrenado te preparó para este momento épico. Los primeros 30K son con la cabeza, los últimos 12K con el corazón. Confía en tu plan, respeta la distancia, mantén tu ritmo. Cuando llegue el muro, recuerda por qué empezaste. ¡Eres un maratonista, demuéstralo! 🏃‍♂️💪🔥🎯`
+            };
+            
+            return messages[distance] || `¡Vamos ${name}! Hoy es tu día. ¡A darlo todo! 🏃‍♂️💪🔥`;
         }
 
         function formatPace(seconds) {
@@ -790,8 +1353,48 @@
             return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
         }
 
+        function getPeriodDescription(period) {
+            const descriptions = {
+                'basico': 'Construcción de base aeróbica, desarrollo de resistencia general y fortalecimiento del sistema cardiovascular. Enfoque en volumen y adaptación progresiva. Se establecen los cimientos para el trabajo intenso posterior.',
+                'especifico': 'Desarrollo de capacidades específicas para la distancia objetivo. Incremento de intensidad con intervalos y tempo runs. Mayor volumen en tiradas largas. Se trabaja la velocidad específica y resistencia a la fatiga.',
+                'competencia': 'Ajuste fino de ritmos de carrera. Simulaciones de competencia y trabajo de velocidad específica. Reducción gradual de volumen (tapering) con mantenimiento de intensidad. Preparación mental y física para el día de la carrera.',
+                'transicion': 'Recuperación activa post-objetivo. Reducción significativa de volumen e intensidad para regeneración completa y prevención de lesiones. Permite que el cuerpo se recupere completamente del esfuerzo acumulado.'
+            };
+            return descriptions[period];
+        }
+
         function displayPlan(plan) {
-            // Display plan info
+            const raceDateObj = new Date(plan.userData.raceDate);
+            const raceDay = raceDateObj.toLocaleDateString('es-CL', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            let prepRacesHtml = '';
+            if (plan.userData.prepRaces.length > 0) {
+                prepRacesHtml = '<div class="info-item" style="grid-column: 1/-1;"><strong>Carreras Preparatorias</strong><br>';
+                plan.userData.prepRaces.forEach(race => {
+                    prepRacesHtml += `<span class="prep-race-badge">${race.name} - ${race.distance} - ${new Date(race.date).toLocaleDateString('es-CL')}</span>`;
+                });
+                prepRacesHtml += '</div>';
+            }
+
+            let crossTrainingHtml = '';
+            if (plan.userData.crossTraining.length > 0) {
+                crossTrainingHtml = '<div class="info-item" style="grid-column: 1/-1;"><strong>Entrenamiento Cruzado</strong><br><span>' + 
+                    plan.userData.crossTraining.join(', ') + '</span></div>';
+            }
+
+            let techHtml = '';
+            if (plan.userData.hasWatch) {
+                techHtml = `<div class="info-item"><strong>Monitoreo</strong><span>Reloj Deportivo</span></div>`;
+                if (plan.userData.vo2max) {
+                    techHtml += `<div class="info-item"><strong>VO2 Max</strong><span>${plan.userData.vo2max} ml/kg/min</span></div>`;
+                }
+            }
+
             const planInfoHtml = `
                 <div class="info-item">
                     <strong>Atleta</strong>
@@ -807,70 +1410,132 @@
                 </div>
                 <div class="info-item">
                     <strong>Objetivo</strong>
-                    <span>${plan.userData.distance}</span>
+                    <span>${plan.userData.distance}${plan.userData.firstTimeDistance ? ' (Primera vez)' : ''}</span>
                 </div>
                 <div class="info-item">
-                    <strong>Ritmo objetivo</strong>
+                    <strong>Fecha Objetivo</strong>
+                    <span>${raceDay}</span>
+                </div>
+                <div class="info-item">
+                    <strong>Ritmo Objetivo</strong>
                     <span>${plan.userData.pace}/km</span>
                 </div>
                 <div class="info-item">
-                    <strong>Duración</strong>
-                    <span>${plan.weeks} semanas</span>
+                    <strong>Duración Total</strong>
+                    <span>${plan.totalWeeks} semanas</span>
                 </div>
+                <div class="info-item">
+                    <strong>Días Entrenamiento</strong>
+                    <span>${plan.userData.trainingDays.length} días/semana</span>
+                </div>
+                ${techHtml}
+                ${prepRacesHtml}
+                ${crossTrainingHtml}
             `;
             document.getElementById('planInfo').innerHTML = planInfoHtml;
 
-            // Display weekly plans
-            let planHtml = '';
+            const periodGroups = {
+                basico: [],
+                especifico: [],
+                competencia: [],
+                transicion: []
+            };
+
             plan.weeklyPlans.forEach(week => {
+                periodGroups[week.period].push(week);
+            });
+
+            let planHtml = '';
+            
+            Object.keys(periodGroups).forEach(periodKey => {
+                if (periodGroups[periodKey].length === 0) return;
+                
+                const periodName = plan.periods[periodKey].name;
+                const periodDescription = getPeriodDescription(periodKey);
+                
                 planHtml += `
-                    <div class="week-card">
-                        <div class="week-header">
-                            Semana ${week.week} de ${plan.weeks}
+                    <div class="period-section">
+                        <div class="period-header">
+                            ${periodName} (${periodGroups[periodKey].length} semanas)
                         </div>
-                        <div class="training-grid">
+                        <div class="period-description">
+                            <strong>Enfoque del período:</strong> ${periodDescription}
+                        </div>
                 `;
                 
-                week.sessions.forEach(session => {
+                periodGroups[periodKey].forEach(week => {
+                    const weekClass = week.isRaceWeek ? 'week-card race-week' : 'week-card';
+                    const headerClass = week.isRaceWeek ? 'week-header race-week-header' : 'week-header';
+                    
                     planHtml += `
-                        <div class="training-day">
-                            <div class="day-header">
-                                <div class="day-name">${session.day}</div>
-                                <div class="session-type">${session.type}</div>
-                                <div class="session-distance">${session.distance}</div>
+                        <div class="${weekClass}">
+                            <div class="${headerClass}">
+                                ${week.isRaceWeek ? '🏆🎯 ' : ''}Semana ${week.week} de ${plan.totalWeeks}${week.isRaceWeek ? ' - ¡SEMANA DE COMPETENCIA!' : ''}
+                                ${week.prepRace && !week.isRaceWeek ? `<br><span style="font-size: 0.9rem;">🏁 ${week.prepRace.name} - ${week.prepRace.distance}</span>` : ''}
                             </div>
-                            
-                            <div class="session-details">
-                                <div class="session-phase">
-                                    <div class="phase-title">🔥 Calentamiento</div>
-                                    <div class="phase-content">${session.details.warmup}</div>
+                            <div class="training-grid">
+                    `;
+                    
+                    week.sessions.forEach(session => {
+                        const dayClass = session.isRaceDay ? 'training-day race-day' : 'training-day';
+                        
+                        planHtml += `
+                            <div class="${dayClass}">
+                                ${session.isRaceDay ? '<div style="text-align: center; font-size: 2rem; margin-bottom: 1rem;">🏆 🏁 🎯 ⭐</div>' : ''}
+                                <div class="day-header">
+                                    <div class="day-name">${session.day}</div>
+                                    <div class="session-type">${session.type}</div>
+                                    <div class="session-distance">${session.distance}</div>
                                 </div>
-                                <div class="session-phase">
-                                    <div class="phase-title">🏃‍♂️ Desarrollo Principal</div>
-                                    <div class="phase-content">${session.details.main}</div>
+                                
+                                ${session.isRaceDay ? `
+                                    <div class="motivational-message">
+                                        ${session.motivationalMessage}
+                                    </div>
+                                ` : ''}
+                                
+                                <div class="session-details">
+                                    <div class="session-phase">
+                                        <div class="phase-title">🔥 Calentamiento</div>
+                                        <div class="phase-content">${session.details.warmup}</div>
+                                    </div>
+                                    <div class="session-phase">
+                                        <div class="phase-title">🏃‍♂️ Desarrollo</div>
+                                        <div class="phase-content">${session.details.main}</div>
+                                    </div>
+                                    <div class="session-phase">
+                                        <div class="phase-title">🧘‍♂️ Enfriamiento</div>
+                                        <div class="phase-content">${session.details.cooldown}</div>
+                                    </div>
                                 </div>
-                                <div class="session-phase">
-                                    <div class="phase-title">🧘‍♂️ Vuelta a la Calma</div>
-                                    <div class="phase-content">${session.details.cooldown}</div>
-                                </div>
-                            </div>
 
-                            <div class="training-purpose">
-                                <div class="purpose-title">${session.purpose.title}</div>
-                                <div class="purpose-content">${session.purpose.content}</div>
+                                ${session.shoeRecommendation ? `
+                                    <div class="shoe-recommendation">
+                                        ${session.shoeRecommendation}
+                                    </div>
+                                ` : ''}
+
+                                ${!session.isRaceDay ? `
+                                    <div class="training-purpose">
+                                        <div class="purpose-title">${session.purpose.title}</div>
+                                        <div class="purpose-content">${session.purpose.content}</div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    });
+                    
+                    planHtml += `
+                            </div>
+                            <div class="volume-summary">
+                                📊 VOLUMEN SEMANAL: ${week.totalKm} KM
+                                ${week.week % 4 === 0 && !week.isRaceWeek ? '<br><br>💆‍♂️ RECOMENDACIÓN: Sesión de masaje deportivo o kinesiología esta semana para optimizar recuperación.' : ''}
                             </div>
                         </div>
                     `;
                 });
                 
-                planHtml += `
-                        </div>
-                        <div class="volume-summary">
-                            📊 VOLUMEN SEMANAL TOTAL: ${week.totalKm} KM
-                            ${week.week % 4 === 0 ? '<br><br>💆‍♂️ RECOMENDACIÓN: Programa una sesión de masaje deportivo o kinesiología esta semana para optimizar tu recuperación.' : ''}
-                        </div>
-                    </div>
-                `;
+                planHtml += `</div>`;
             });
             
             document.getElementById('trainingPlan').innerHTML = planHtml;
@@ -883,102 +1548,174 @@
             let yPos = 20;
             
             // Title
-            doc.setFontSize(22);
+            doc.setFontSize(20);
             doc.setTextColor(220, 20, 60);
             doc.setFont(undefined, 'bold');
+            doc.text('OSORNO RUNNERS', 105, yPos, { align: 'center' });
+            yPos += 8;
+            doc.setFontSize(16);
             doc.text('PLAN DE ENTRENAMIENTO PERSONALIZADO', 105, yPos, { align: 'center' });
-            
             yPos += 15;
             
             // User info
-            doc.setFontSize(10);
+            doc.setFontSize(9);
             doc.setTextColor(0, 0, 0);
             doc.setFont(undefined, 'normal');
+            
+            const raceDateObj = new Date(currentPlan.userData.raceDate);
+            const raceDay = raceDateObj.toLocaleDateString('es-CL');
             
             const userInfo = [
                 ['Atleta:', currentPlan.userData.name, 'Edad:', `${currentPlan.userData.age} años`],
                 ['Experiencia:', currentPlan.userData.experience, 'Objetivo:', currentPlan.userData.distance],
-                ['Ritmo objetivo:', `${currentPlan.userData.pace}/km`, 'Duración:', `${currentPlan.weeks} semanas`]
+                ['Ritmo objetivo:', `${currentPlan.userData.pace}/km`, 'Fecha:', raceDay],
+                ['Duración:', `${currentPlan.totalWeeks} semanas`, 'Días/semana:', currentPlan.userData.trainingDays.length]
             ];
+            
+            if (currentPlan.userData.firstTimeDistance) {
+                userInfo.push(['Primera vez en distancia:', 'Sí', '', '']);
+            }
+            
+            if (currentPlan.userData.crossTraining.length > 0) {
+                userInfo.push(['Entrenamiento cruzado:', currentPlan.userData.crossTraining.join(', '), '', '']);
+            }
             
             userInfo.forEach(row => {
                 doc.setFont(undefined, 'bold');
                 doc.text(row[0], 20, yPos);
                 doc.setFont(undefined, 'normal');
-                doc.text(row[1], 50, yPos);
-                doc.setFont(undefined, 'bold');
-                doc.text(row[2], 110, yPos);
-                doc.setFont(undefined, 'normal');
-                doc.text(row[3], 140, yPos);
-                yPos += 7;
+                doc.text(row[1], 45, yPos);
+                if (row[2]) {
+                    doc.setFont(undefined, 'bold');
+                    doc.text(row[2], 110, yPos);
+                    doc.setFont(undefined, 'normal');
+                    doc.text(row[3], 135, yPos);
+                }
+                yPos += 6;
             });
             
             yPos += 5;
             
-            // Weekly plans
-            currentPlan.weeklyPlans.forEach((week, weekIndex) => {
+            // Weekly plans por período
+            const periodGroups = {
+                basico: [],
+                especifico: [],
+                competencia: [],
+                transicion: []
+            };
+
+            currentPlan.weeklyPlans.forEach(week => {
+                periodGroups[week.period].push(week);
+            });
+            
+            Object.keys(periodGroups).forEach(periodKey => {
+                if (periodGroups[periodKey].length === 0) return;
+                
                 if (yPos > 250) {
                     doc.addPage();
                     yPos = 20;
                 }
                 
-                // Week header
-                doc.setFillColor(220, 20, 60);
-                doc.rect(20, yPos - 5, 170, 10, 'F');
+                // Period header
+                doc.setFillColor(26, 26, 26);
+                doc.rect(20, yPos - 5, 170, 8, 'F');
                 doc.setTextColor(255, 255, 255);
-                doc.setFontSize(12);
+                doc.setFontSize(11);
                 doc.setFont(undefined, 'bold');
-                doc.text(`SEMANA ${week.week} DE ${currentPlan.weeks}`, 105, yPos + 2, { align: 'center' });
+                doc.text(currentPlan.periods[periodKey].name.toUpperCase(), 105, yPos, { align: 'center' });
+                yPos += 10;
                 
-                yPos += 12;
-                
-                // Sessions
-                week.sessions.forEach(session => {
-                    if (yPos > 260) {
+                periodGroups[periodKey].forEach(week => {
+                    if (yPos > 250) {
                         doc.addPage();
                         yPos = 20;
                     }
                     
-                    doc.setFontSize(9);
-                    doc.setTextColor(220, 20, 60);
+                    // Week header
+                    if (week.isRaceWeek) {
+                        doc.setFillColor(255, 215, 0);
+                        doc.rect(20, yPos - 4, 170, 8, 'F');
+                        doc.setTextColor(26, 26, 26);
+                    } else {
+                        doc.setFillColor(220, 20, 60);
+                        doc.rect(20, yPos - 4, 170, 7, 'F');
+                        doc.setTextColor(255, 255, 255);
+                    }
+                    
+                    doc.setFontSize(10);
                     doc.setFont(undefined, 'bold');
-                    doc.text(`${session.day.toUpperCase()} - ${session.type}`, 20, yPos);
-                    doc.setTextColor(0, 0, 0);
-                    doc.text(`${session.distance}`, 180, yPos, { align: 'right' });
+                    let weekText = week.isRaceWeek ? `SEMANA ${week.week} - COMPETENCIA` : `SEMANA ${week.week}`;
+                    if (week.prepRace && !week.isRaceWeek) {
+                        weekText += ` - ${week.prepRace.name} (${week.prepRace.distance})`;
+                    }
+                    doc.text(weekText, 105, yPos, { align: 'center' });
+                    yPos += 9;
                     
-                    yPos += 5;
-                    
-                    doc.setFontSize(8);
-                    doc.setFont(undefined, 'normal');
-                    
-                    const details = [
-                        `Calentamiento: ${session.details.warmup}`,
-                        `Desarrollo: ${session.details.main}`,
-                        `Enfriamiento: ${session.details.cooldown}`
-                    ];
-                    
-                    details.forEach(detail => {
-                        const lines = doc.splitTextToSize(detail, 170);
-                        doc.text(lines, 22, yPos);
-                        yPos += lines.length * 4;
+                    // Sessions
+                    week.sessions.forEach(session => {
+                        if (yPos > 265) {
+                            doc.addPage();
+                            yPos = 20;
+                        }
+                        
+                        doc.setFontSize(8);
+                        if (session.isRaceDay) {
+                            doc.setTextColor(255, 140, 0);
+                        } else {
+                            doc.setTextColor(220, 20, 60);
+                        }
+                        doc.setFont(undefined, 'bold');
+                        doc.text(`${session.day.toUpperCase()} - ${session.type}`, 20, yPos);
+                        doc.setTextColor(0, 0, 0);
+                        doc.text(`${session.distance}`, 180, yPos, { align: 'right' });
+                        yPos += 4;
+                        
+                        if (session.isRaceDay && session.motivationalMessage) {
+                            doc.setFontSize(7);
+                            doc.setFont(undefined, 'italic');
+                            doc.setTextColor(255, 140, 0);
+                            const msgLines = doc.splitTextToSize(session.motivationalMessage, 170);
+                            doc.text(msgLines, 22, yPos);
+                            yPos += msgLines.length * 3.5 + 2;
+                            doc.setTextColor(0, 0, 0);
+                        }
+                        
+                        doc.setFontSize(7);
+                        doc.setFont(undefined, 'normal');
+                        
+                        const details = [
+                            `Cal: ${session.details.warmup}`,
+                            `Des: ${session.details.main}`,
+                            `Enf: ${session.details.cooldown}`
+                        ];
+                        
+                        if (session.shoeRecommendation) {
+                            details.push(session.shoeRecommendation);
+                        }
+                        
+                        details.forEach(detail => {
+                            const lines = doc.splitTextToSize(detail, 170);
+                            doc.text(lines, 22, yPos);
+                            yPos += lines.length * 3.5;
+                        });
+                        
+                        yPos += 2;
                     });
                     
-                    yPos += 3;
+                    // Volume summary
+                    doc.setFillColor(26, 26, 26);
+                    doc.rect(20, yPos, 170, 6, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(8);
+                    doc.setFont(undefined, 'bold');
+                    doc.text(`VOLUMEN: ${week.totalKm} KM`, 105, yPos + 4, { align: 'center' });
+                    yPos += 10;
                 });
-                
-                // Volume summary
-                doc.setFillColor(26, 26, 26);
-                doc.rect(20, yPos, 170, 8, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(9);
-                doc.setFont(undefined, 'bold');
-                doc.text(`VOLUMEN SEMANAL: ${week.totalKm} KM`, 105, yPos + 5, { align: 'center' });
-                
-                yPos += 15;
             });
             
             // Save PDF
-            doc.save(`Plan_Entrenamiento_${currentPlan.userData.name.replace(/\s+/g, '_')}.pdf`);
+            const fileName = `Plan_OsornoRunners_${currentPlan.userData.name.replace(/\s+/g, '_')}_${currentPlan.userData.distance}.pdf`;
+            doc.save(fileName);
         }
     </script>
 </body>
