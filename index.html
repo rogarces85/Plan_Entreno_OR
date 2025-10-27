@@ -1095,7 +1095,7 @@
             const trainingDays = data.trainingDays;
             const progressFactor = (weekInPeriod + 1) / periodWeeks;
             const baseDistances = getBaseDistances(period, data.distance, data.currentLongRun, progressFactor, data.firstTimeDistance);
-            const sessionTypes = assignSessionsToDays(trainingDays, period, data.distance, data.crossTraining);
+            const sessionTypes = assignSessionsToDays(trainingDays, period, data.distance, data.crossTraining, baseDistances);
             
             const isRaceWeek = weekNum === raceWeek;
             
@@ -1104,7 +1104,7 @@
                 const session = {
                     day: day,
                     type: sessionType.type,
-                    distance: sessionType.distance || baseDistances[sessionType.type] || '5 km',
+                    distance: sessionType.distance,
                     details: generateSessionDescription(sessionType.type, period, targetPaceSeconds, data.hrMax, data.crossTraining),
                     purpose: getSessionPurpose(sessionType.type),
                     shoeRecommendation: getShoeRecommendation(sessionType.type)
@@ -1122,7 +1122,8 @@
             
             let totalKm = 0;
             sessions.forEach(session => {
-                const dist = parseInt(session.distance.replace(/[^\d]/g, '')) || 0;
+                const distStr = session.distance.replace(/[^\d]/g, '');
+                const dist = parseInt(distStr) || 0;
                 totalKm += dist;
             });
             
@@ -1188,43 +1189,43 @@
             return distances[period][targetDistance];
         }
 
-        function assignSessionsToDays(trainingDays, period, targetDistance, crossTraining) {
+        function assignSessionsToDays(trainingDays, period, targetDistance, crossTraining, baseDistances) {
             const sessions = [];
             const numDays = trainingDays.length;
             const hasCrossTraining = crossTraining.length > 0;
             
             if (period === 'basico') {
                 for (let i = 0; i < numDays; i++) {
-                    if (i === 0) sessions.push({ type: 'Trote fácil' });
-                    else if (i === 1 && hasCrossTraining) sessions.push({ type: 'Descanso activo' });
-                    else if (i === 1) sessions.push({ type: 'Tempo run' });
-                    else if (i === 2) sessions.push({ type: 'Descanso activo' });
-                    else if (i === numDays - 1) sessions.push({ type: 'Carrera larga' });
-                    else sessions.push({ type: 'Trote fácil' });
+                    if (i === 0) sessions.push({ type: 'Trote fácil', distance: baseDistances['easy'] });
+                    else if (i === 1 && hasCrossTraining) sessions.push({ type: 'Descanso activo', distance: baseDistances['easy'] });
+                    else if (i === 1) sessions.push({ type: 'Tempo run', distance: baseDistances['tempo'] });
+                    else if (i === 2) sessions.push({ type: 'Descanso activo', distance: baseDistances['easy'] });
+                    else if (i === numDays - 1) sessions.push({ type: 'Carrera larga', distance: baseDistances['long'] });
+                    else sessions.push({ type: 'Trote fácil', distance: baseDistances['easy'] });
                 }
             } else if (period === 'especifico') {
                 for (let i = 0; i < numDays; i++) {
-                    if (i === 0) sessions.push({ type: 'Trote fácil' });
-                    else if (i === 1) sessions.push({ type: 'Intervalos' });
-                    else if (i === 2) sessions.push({ type: 'Descanso activo' });
-                    else if (i === 3) sessions.push({ type: 'Tempo run' });
-                    else if (i === numDays - 1) sessions.push({ type: 'Carrera larga' });
-                    else sessions.push({ type: 'Recuperación' });
+                    if (i === 0) sessions.push({ type: 'Trote fácil', distance: baseDistances['easy'] });
+                    else if (i === 1) sessions.push({ type: 'Intervalos', distance: baseDistances['interval'] });
+                    else if (i === 2) sessions.push({ type: 'Descanso activo', distance: baseDistances['easy'] });
+                    else if (i === 3) sessions.push({ type: 'Tempo run', distance: baseDistances['tempo'] });
+                    else if (i === numDays - 1) sessions.push({ type: 'Carrera larga', distance: baseDistances['long'] });
+                    else sessions.push({ type: 'Recuperación', distance: baseDistances['easy'] });
                 }
             } else if (period === 'competencia') {
                 for (let i = 0; i < numDays; i++) {
-                    if (i === 0) sessions.push({ type: 'Trote fácil' });
-                    else if (i === 1) sessions.push({ type: 'Intervalos' });
-                    else if (i === 2) sessions.push({ type: 'Descanso activo' });
-                    else if (i === 3) sessions.push({ type: 'Tempo run' });
-                    else if (i === numDays - 1) sessions.push({ type: 'Carrera larga' });
-                    else sessions.push({ type: 'Recuperación' });
+                    if (i === 0) sessions.push({ type: 'Trote fácil', distance: baseDistances['easy'] });
+                    else if (i === 1) sessions.push({ type: 'Intervalos', distance: baseDistances['interval'] });
+                    else if (i === 2) sessions.push({ type: 'Descanso activo', distance: baseDistances['easy'] });
+                    else if (i === 3) sessions.push({ type: 'Tempo run', distance: baseDistances['tempo'] });
+                    else if (i === numDays - 1) sessions.push({ type: 'Carrera larga', distance: baseDistances['long'] });
+                    else sessions.push({ type: 'Recuperación', distance: baseDistances['easy'] });
                 }
             } else {
                 for (let i = 0; i < numDays; i++) {
-                    if (i === 0) sessions.push({ type: 'Descanso' });
-                    else if (i === numDays - 1) sessions.push({ type: 'Trote fácil' });
-                    else sessions.push({ type: 'Recuperación' });
+                    if (i === 0) sessions.push({ type: 'Descanso', distance: '0 km' });
+                    else if (i === numDays - 1) sessions.push({ type: 'Trote fácil', distance: baseDistances['easy'] });
+                    else sessions.push({ type: 'Recuperación', distance: baseDistances['recovery'] || baseDistances['easy'] });
                 }
             }
             
@@ -1542,6 +1543,11 @@
         }
 
         function generatePDF() {
+            if (!window.jspdf || !window.jspdf.jsPDF) {
+                alert('Error al cargar la librería de PDF. Por favor recarga la página.');
+                return;
+            }
+            
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
@@ -1554,7 +1560,7 @@
             doc.text('OSORNO RUNNERS', 105, yPos, { align: 'center' });
             yPos += 8;
             doc.setFontSize(16);
-            doc.text('PLAN DE ENTRENAMIENTO PERSONALIZADO', 105, yPos, { align: 'center' });
+            doc.text('PLAN DE ENTRENAMIENTO', 105, yPos, { align: 'center' });
             yPos += 15;
             
             // User info
@@ -1568,28 +1574,24 @@
             const userInfo = [
                 ['Atleta:', currentPlan.userData.name, 'Edad:', `${currentPlan.userData.age} años`],
                 ['Experiencia:', currentPlan.userData.experience, 'Objetivo:', currentPlan.userData.distance],
-                ['Ritmo objetivo:', `${currentPlan.userData.pace}/km`, 'Fecha:', raceDay],
-                ['Duración:', `${currentPlan.totalWeeks} semanas`, 'Días/semana:', currentPlan.userData.trainingDays.length]
+                ['Ritmo:', `${currentPlan.userData.pace}/km`, 'Fecha:', raceDay],
+                ['Duración:', `${currentPlan.totalWeeks} sem.`, 'Días/sem:', `${currentPlan.userData.trainingDays.length}`]
             ];
             
             if (currentPlan.userData.firstTimeDistance) {
-                userInfo.push(['Primera vez en distancia:', 'Sí', '', '']);
-            }
-            
-            if (currentPlan.userData.crossTraining.length > 0) {
-                userInfo.push(['Entrenamiento cruzado:', currentPlan.userData.crossTraining.join(', '), '', '']);
+                userInfo.push(['Primera vez:', 'Sí', '', '']);
             }
             
             userInfo.forEach(row => {
                 doc.setFont(undefined, 'bold');
                 doc.text(row[0], 20, yPos);
                 doc.setFont(undefined, 'normal');
-                doc.text(row[1], 45, yPos);
+                doc.text(String(row[1]), 50, yPos);
                 if (row[2]) {
                     doc.setFont(undefined, 'bold');
                     doc.text(row[2], 110, yPos);
                     doc.setFont(undefined, 'normal');
-                    doc.text(row[3], 135, yPos);
+                    doc.text(String(row[3]), 135, yPos);
                 }
                 yPos += 6;
             });
@@ -1622,7 +1624,8 @@
                 doc.setTextColor(255, 255, 255);
                 doc.setFontSize(11);
                 doc.setFont(undefined, 'bold');
-                doc.text(currentPlan.periods[periodKey].name.toUpperCase(), 105, yPos, { align: 'center' });
+                const periodName = currentPlan.periods[periodKey].name.toUpperCase();
+                doc.text(periodName, 105, yPos, { align: 'center' });
                 yPos += 10;
                 
                 periodGroups[periodKey].forEach(week => {
@@ -1646,7 +1649,7 @@
                     doc.setFont(undefined, 'bold');
                     let weekText = week.isRaceWeek ? `SEMANA ${week.week} - COMPETENCIA` : `SEMANA ${week.week}`;
                     if (week.prepRace && !week.isRaceWeek) {
-                        weekText += ` - ${week.prepRace.name} (${week.prepRace.distance})`;
+                        weekText += ` - ${week.prepRace.name}`;
                     }
                     doc.text(weekText, 105, yPos, { align: 'center' });
                     yPos += 9;
@@ -1665,9 +1668,10 @@
                             doc.setTextColor(220, 20, 60);
                         }
                         doc.setFont(undefined, 'bold');
-                        doc.text(`${session.day.toUpperCase()} - ${session.type}`, 20, yPos);
+                        const sessionTitle = `${session.day.toUpperCase()} - ${session.type}`;
+                        doc.text(sessionTitle, 20, yPos);
                         doc.setTextColor(0, 0, 0);
-                        doc.text(`${session.distance}`, 180, yPos, { align: 'right' });
+                        doc.text(String(session.distance), 180, yPos, { align: 'right' });
                         yPos += 4;
                         
                         if (session.isRaceDay && session.motivationalMessage) {
